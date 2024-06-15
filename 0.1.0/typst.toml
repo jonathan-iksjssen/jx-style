@@ -1,0 +1,7 @@
+[package]
+name = "jx-style"
+version = "0.1.0"
+entrypoint = "jx-style.typ"
+authors = ["joniksj"]
+license = "MIT"
+description = "joniksj's style files"
