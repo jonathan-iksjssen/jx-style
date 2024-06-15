@@ -34,7 +34,7 @@ If you haven't heard, `typst` is a newfangled document typesetting system akin t
    ```
    Replace `local` with whatever you named your package namespace in step 2.
 
-### Without `git clone`
+#### Without `git clone`
 
 1. Download the `.zip` file of this repository.
 2. Navigate to your `typst` local packages directory, which is:
