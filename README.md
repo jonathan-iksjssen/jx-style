@@ -1,7 +1,7 @@
 # jx-style DOCUMENTATION
 
 ## What is this?
-This is **@joniksj**'s style package for his `typst` documents. Recommended for use if you are him, or if you want to make your documents look like his.
+This is **@joniksj**'s personal style package for his `typst` documents. Recommended for use if you are him, or if you want to make your documents look like his.
 
 ## How to use
 Of course, to use this, you'll need [`typst`](https://github.com/typst/typst).
@@ -36,6 +36,32 @@ If you haven't heard, `typst` is a newfangled document typesetting system akin t
 
 ### Without `git clone`
 
+1. Download the `.zip` file of this repository.
+2. Navigate to your `typst` local packages directory, which is:
+  - `$XDG_DATA_HOME/typst/packages` or `~/.local/share/typst/packages` on Linux
+  - `~/Library/Application Support/typst/packages` on macOS
+  - `%APPDATA%/typst/packages` on Windows
+3. Make a folder called `local` *(or whatever you want to name your package namespace)* and navigate into it.
+4. Extract the contents of `jx-style-main.zip` directly into said folder.
+5. If necessary, rename the `jx-style-main` folder to just `jx-style`.
+6. Make a new `.typ` file anywhere
+7. Import the package with
+   ```c
+    #import "@local/jx-style:0.1.0": *
+   ```
+   Replace `local` with whatever you named your package namespace in step 2.
+
 ## Parts
 
-There are three main parts of this 
+There are four main parts of this package that are important:
+
+| File | Purpose |
+|---|---|
+`irgot.json` | Contains the **colour schemes** that are possible for documents. *‹irgot›* means *‹colours›* in Icsine, my personal conlang.
+`jx-style.typ` | The **main style file**, and the entry point to the package itself. Contains all the styles themselves, all that shabang.
+`jx-date.typ` | My own **date string formatter**. Accessed by `jx-style.typ` to display dates how I like it.
+`typst.toml` | The **manifest** for the package, in accordance with [typst/packages](https://github.com/typst/packages).
+
+### `irgot.json`
+
+I mainly use this styling packages for making homework documents for school, or when making other kindsa documents — and one thing about me is I like to colour-code my stuff, down to the designs of my documents. 
