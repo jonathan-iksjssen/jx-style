@@ -53,7 +53,7 @@
   tags: (),
   cod: "",
   colsc: "default",
-  pinetint: false,
+  bgtint: none,
   headingstyle: "block",
   headingnum: "1.1.1",
   headingsup: "Section",
@@ -106,8 +106,10 @@
   let tx = rgb("#0E0E25") // Text; 950
 
   if (coll.at(colsc, default: "nane") != "nane") {
-    bg = if(pinetint) {
+    bg = if(bgtint == "pine") {
       color.mix((rgb(eval("coll." + colsc, scope: (coll: coll)).bg), 33%), (rgb("#EFEBE9"), 67%))
+    } else if (bgtint == "grey") {
+      rgb(eval("coll." + colsc, scope: (coll: coll)).bg).desaturate(100%)
     } else {
       rgb(eval("coll." + colsc, scope: (coll: coll)).bg)
     }
@@ -163,8 +165,8 @@
     } else {
       ()
     },
-    tracking: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {-0.67pt} else {0pt},
-    spacing: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {200%/3} else {100%}
+    tracking: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {-0.5pt} else {0pt},
+    spacing: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {300%/5} else {100%}
   )
 
 
@@ -374,6 +376,8 @@
     ]
   } else if (headingstyle == "book") {
     [
+      #pagebreak(weak:true)
+      #set block(breakable: false)
     #block(
     width: 100%,
     height: 8em,
@@ -1278,6 +1282,7 @@
 
 #let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
 #let cock = text(font:"Noto Sans EgyptHiero", weight: 900)[𓂸];
+#let lenny = text(font: "Segoe UI", "( ͡° ͜ʖ ͡°)");
 
 #let big(n, body) = [ #text(size: 1em + (0.167em * n))[#body] ]
 #let sml(n, body) = [ #text(size: 1em - (0.167em * n))[#body] ]
