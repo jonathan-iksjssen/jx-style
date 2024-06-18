@@ -1289,3 +1289,5 @@
 #let al-left(body) = [ #align(left)[#body] ]
 #let al-centre(body) = [ #align(center)[#body] ]
 #let al-right(body) = [ #align(right)[#body] ]
+
+#let cpf(label) = cite(label, form: "prose")
