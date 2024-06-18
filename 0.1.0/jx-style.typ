@@ -179,7 +179,7 @@
   } else if (font.contains("Noto Sans") or font.contains("Noto Mono")) {
     text(font: "Noto Sans Math")[#m]
   } else {
-    text(font: "STIX Math")[#m]
+    text(font: "STIX Two Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1.2em)
   show math.equation.where(block: true): me => [#set text(size: 1.5em); #align(center)[#me]]
