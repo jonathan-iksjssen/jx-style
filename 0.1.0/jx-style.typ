@@ -30,8 +30,10 @@
 
   // EXTRA PAPER SUBTITLES SHOULD THE FORMAT DEMAND IT.
   rp-subtitle: [],
+  
   rp-supplement: [],
   bp-supplement2: [],
+  rp-header: [],
 
   // PAPER SUBJECT.
   rp-subject: [],
@@ -62,6 +64,7 @@
   fw: "regular",
   date: datetime.today().display("[day padding:none] [month repr:short] [year repr:full]"),
   columns: 1,
+  outcols: 1,
   fz: 12pt,
   flags: (),
   debug: false,
@@ -192,7 +195,7 @@
   set outline(depth: 3, indent: 2em, title: if(doctype in ("businessPlan", "paper")) {none} else {"Table of Contents"})
   show outline.entry.where(level: 1): strong
   show outline: a => if(doctype in ("businessPlan", "paper")) {
-    [#page()[ #align(horizon + center)[#a]~] ]
+    [#page(columns: outcols)[ #align(horizon + center)[#block(width: 200%/3,a)]~] ]
   } else {
     a
   }
@@ -282,10 +285,14 @@
     } else { 11in },
     margin: (
       y: 0.75in,
-      rest: 0.5in,
+      rest: if(flags.contains("shineformat")){1in}else{0.5in},
       bottom: if (flags.contains("nofoot")) { 0.75in } else { 1in },
+      top: if (rp-header == []) { 0.75in } else { 1in },
     ),
-    header: line(length: 100%, stroke: dashedStroke(tx.transparentize(50%))),
+    header: [
+    #if(rp-header != []){[ #rp-header #h(1fr) #rp-subject #v(-1em)]};
+    #line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))
+    ],
     footer: [
       #line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)));
       #if (flags.contains("nofoot")) {} else [
@@ -404,6 +411,8 @@
     ]]
 ]
     ]
+  } else {
+    set text(1.25em); hy
   }
 
   // -- HEADING 2 -- HEADING 2 -- HEADING 2 -- HEADING 2 --
@@ -472,7 +481,7 @@
       ]
 
     ]
-  }
+  } else { set text(1.167em); hy }
 
   // -- HEADING 3 -- HEADING 3 -- HEADING 3 -- HEADING 3 --
   show heading.where(level: 3): hy => if (headingstyle in ("block", "book")) {
@@ -540,7 +549,7 @@
       ]
 
     ]
-  }
+  } else { set text(1.083em); hy }
 
   // -- HEADING 4 -- HEADING 4 -- HEADING 4 -- HEADING 4 --
   show heading.where(level: 4): hy => if (headingstyle in ("block", "book")) {
@@ -603,7 +612,7 @@
       ]
 
     ]
-  }
+  } else { hy }
 
   // -- HEADING 5 -- HEADING 5 -- HEADING 5 -- HEADING 5 --
   show heading.where(level: 5): hy => if (headingstyle in ("block", "book")) {
@@ -666,7 +675,7 @@
       ]
 
     ]
-  }
+  } else { hy }
 
   // -- HEADING 6 -- HEADING 6 -- HEADING 6 -- HEADING 6 --
   show heading.where(level: 6): hy => if (headingstyle in ("block", "book")) {
@@ -729,7 +738,7 @@
       ]
 
     ]
-  }
+  } else { hy }
   show heading: set block(spacing: 1em)
 
   // #endregion
