@@ -173,6 +173,7 @@
   show raw: set text(font: "Iosevka SS14", size: fz)
 
   set par(justify: true, leading: 0.8em)
+  show par: set block(spacing: 2em)
 
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
@@ -397,7 +398,7 @@
         height: auto
       )[
       #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
-      #v(-1.25em)
+      #v(-3.25em)
       #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
     ]
     ]]
