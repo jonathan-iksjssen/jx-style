@@ -196,7 +196,7 @@
 
   show raw: set text(font: "Iosevka SS14", size: fz)
 
-  set par(justify: true, leading: 0.8em)
+  set par(justify: true, leading: 0.9em)
   show par: set block(spacing: 2em)
 
   show math.equation: m => if (font.contains("Fira")) {
@@ -849,7 +849,7 @@
     )[
       #box(
         inset: (x: 0.33em),
-        outset: (y: 0.3em),
+        outset: (y: 0.35em, x: 0.05em),
         fill: back,
       )[#text(fill: fore)[#strong[#body]]]
     ]
@@ -1373,53 +1373,90 @@
 #let qhl-datx(body) = [#[#body]<qhl-datx>]
 #let qhl-tx(body) = [#[#body]<qhl-tx>]
 
-#let c-bg(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-bg(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).bg)
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-bgla(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-bgla(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = color.mix(
       rgb(eval("coll." + cs, scope: (coll: coll)).bg),
       rgb(eval("coll." + cs, scope: (coll: coll)).la),
     )
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-la(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-la(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).la)
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-laac(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-laac(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = color.mix(
       rgb(eval("coll." + cs, scope: (coll: coll)).la),
       rgb(eval("coll." + cs, scope: (coll: coll)).ac),
     )
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-ac(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-ac(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).ac)
-  } #set text(fill: dum); #body ]
+  }
+  #set text(fill: dum);
+  #body
+  ]
 
-#let c-acda(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-acda(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = color.mix(
       rgb(eval("coll." + cs, scope: (coll: coll)).ac),
       rgb(eval("coll." + cs, scope: (coll: coll)).da),
     )
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-da(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-da(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).da)
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-datx(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-datx(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = color.mix(
       rgb(eval("coll." + cs, scope: (coll: coll)).da),
       rgb(eval("coll." + cs, scope: (coll: coll)).tx),
     )
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
-#let c-tx(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
+#let c-tx(cs, body) = [
+  #let dum = black;
+  #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).tx)
-  } #set text(fill: dum); #body ]
+  } #set text(fill: dum);
+  #body
+  ]
 
 #let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
 #let cock = text(font:"Noto Sans EgyptHiero", weight: 900)[𓂸];
