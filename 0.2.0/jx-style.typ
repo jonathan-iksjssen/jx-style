@@ -11,7 +11,16 @@
     ]]
   ]
 
-#let callout(title: "", body: "", width: 100%*2/3) = compCont(cw: width, [#[#title]<cct-tx>],[#[#body]<ccb-bgla>])
+#let callout(title: "", body: "", width: 100%*2/3) = compCont(
+  cw: width,
+  if(title != ""){[#[#title]<cct-tx>]},
+  if(body != ""){[#[#body]<ccb-bgla>]},
+  )
+
+#let unhead(cw: 100%*2/3, body) = compCont(
+  cw: cw,
+  [#[#body]<cct-tx>]
+)
 
 #let docu(
   // DETERMINES WHAT KIND OF DOCUMENT IT WILL BE. CHECK THE VARIABLE validDocTypes A BIT BELOW.
@@ -246,7 +255,7 @@
     },
     tight: false,
   )
-  set list(tight: false, marker: ([#sym.circle.filled], [#sym.circle.stroked], [#sym.triangle.filled.r], [#sym.triangle.stroked.r]))
+  set list(tight: false, marker: ([#sym.circle.filled.small], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]))
   set terms(tight: false)
 
   show enum.item: a => block(inset: (y: 0.167em))[#a]
@@ -257,6 +266,7 @@
 
   set document(
     title: if (title == "") { } else {
+      if(code != ""){code; sym.space; "-"; sym.space}
       title
     },
     author: if (type(author) == str) {
@@ -818,17 +828,33 @@
   let customhl(back, fore, body) = [
     #box(
       inset: (x: 0pt),
-      outset: (y: 0.4em),
+      outset: (y: 0.45em),
       stroke: (y: solidStroke(back)),
       fill: none,
     )[
       #box(
         inset: (x: 0.33em),
-        outset: (y: 0.25em),
+        outset: (y: 0.3em),
         fill: back,
       )[#text(fill: fore)[#strong[#body]]]
     ]
   ]
+
+  let squarehl(back, fore, body) = [
+    #box(
+      inset:(x: 0.15em),
+      outset: (y: 0.45em),
+      stroke: (solidStroke(back)),
+      fill: none,
+    )[
+      #box(
+        inset: (x: 0.33em),
+        outset: (y: 0.3em),
+        fill: back,
+      )[#text(fill: fore)[#strong[#body]]]
+    ]
+  ]
+  
 
   show <hl-tx>: body => customhl(tx, bg, body)
   show <hl-datx>: body => customhl(datx, bg, body)
@@ -841,6 +867,18 @@
   show <hl-la2>: body => customhl(la, da, body)
   show <hl-bgla>: body => customhl(bgla, tx, body)
   show <hl-bg>: body => customhl(bg, tx, body)
+
+  show <qhl-tx>: body => squarehl(tx, bg, body)
+  show <qhl-datx>: body => squarehl(datx, bg, body)
+  show <qhl-da>: body => squarehl(da, bg, body)
+  show <qhl-da2>: body => squarehl(da, la, body)
+  show <qhl-acda>: body => squarehl(acda, bg, body)
+  show <qhl-ac>: body => squarehl(ac, bg, body)
+  show <qhl-laac>: body => squarehl(laac, tx, body)
+  show <qhl-la>: body => squarehl(la, tx, body)
+  show <qhl-la2>: body => squarehl(la, da, body)
+  show <qhl-bgla>: body => squarehl(bgla, tx, body)
+  show <qhl-bg>: body => squarehl(bg, tx, body)
 
   // CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS ---
 
@@ -867,18 +905,18 @@
 
   // COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- COMPLEX CALLOUTS --- 
 
-  let compCallTitle(back, fore, body) = [
+  let compCallTitle(back, fore, wid: 100%, body) = [
     #block(inset: (y:2pt), fill: none, stroke: (y: solidStroke(back)))[
-      #block(width: 100%, inset: 0.67em, fill: back)[
+      #block(width: wid, inset: 0.67em, fill: back)[
         #set text(fill: fore, size: 1.167em, weight: "bold")
         #body
       ]
     ]
   ]
 
-  let compCallBody(back, fore, body) = [
+  let compCallBody(back, fore, wid: 100%, body) = [
     #block(inset: (2pt), fill: none, stroke: (solidStroke(back)))[
-        #block(width: 100%, inset: 0.67em, fill: back)[
+        #block(width: wid, inset: 0.67em, fill: back)[
         #set text(fill: fore)
         #body
       ]
@@ -1315,6 +1353,26 @@
 #let datx(body) = [#[#body]<t-datx>]
 #let tx(body) = [#[#body]<t-tx>]
 
+#let hl-bg(body) = [#[#body]<hl-bg>]
+#let hl-bgla(body) = [#[#body]<hl-bgla>]
+#let hl-la(body) = [#[#body]<hl-la>]
+#let hl-laac(body) = [#[#body]<hl-laac>]
+#let hl-ac(body) = [#[#body]<hl-ac>]
+#let hl-acda(body) = [#[#body]<hl-acda>]
+#let hl-da(body) = [#[#body]<hl-da>]
+#let hl-datx(body) = [#[#body]<hl-datx>]
+#let hl-tx(body) = [#[#body]<hl-tx>]
+
+#let qhl-bg(body) = [#[#body]<qhl-bg>]
+#let qhl-bgla(body) = [#[#body]<qhl-bgla>]
+#let qhl-la(body) = [#[#body]<qhl-la>]
+#let qhl-laac(body) = [#[#body]<qhl-laac>]
+#let qhl-ac(body) = [#[#body]<qhl-ac>]
+#let qhl-acda(body) = [#[#body]<qhl-acda>]
+#let qhl-da(body) = [#[#body]<qhl-da>]
+#let qhl-datx(body) = [#[#body]<qhl-datx>]
+#let qhl-tx(body) = [#[#body]<qhl-tx>]
+
 #let c-bg(cs, body) = [ #let dum = black; #if (coll.at(cs, default: "nane") != "nane") {
     dum = rgb(eval("coll." + cs, scope: (coll: coll)).bg)
   } #set text(fill: dum); #body ]
@@ -1376,3 +1434,5 @@
 #let cpf(label) = cite(label, form: "prose")
 
 #let hr = line(length: 100%)
+
+#let twinfantasy = box(image("twinfantasy.jpg", height: 1.5em, width: 1.5em))
