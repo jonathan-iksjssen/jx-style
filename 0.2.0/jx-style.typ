@@ -1,7 +1,146 @@
-#let coll = json("irgot.json");
+#import "irgot.typ": coll
 #import "jx-date.typ": *
 
-#let compCont(cw: 100%*2/3, ..bodies) = [
+#let irgo(cs, val) = coll.at(cs, default: "default").val
+
+#let bg(body) = [#[#body]<t-bg>]
+#let bgla(body) = [#[#body]<t-bgla>]
+#let la(body) = [#[#body]<t-la>]
+#let laac(body) = [#[#body]<t-laac>]
+#let ac(body) = [#[#body]<t-ac>]
+#let acda(body) = [#[#body]<t-acda>]
+#let da(body) = [#[#body]<t-da>]
+#let datx(body) = [#[#body]<t-datx>]
+#let tx(body) = [#[#body]<t-tx>]
+
+#let hl-bg(body) = [#[#body]<hl-bg>]
+#let hl-bgla(body) = [#[#body]<hl-bgla>]
+#let hl-la(body) = [#[#body]<hl-la>]
+#let hl-laac(body) = [#[#body]<hl-laac>]
+#let hl-ac(body) = [#[#body]<hl-ac>]
+#let hl-acda(body) = [#[#body]<hl-acda>]
+#let hl-da(body) = [#[#body]<hl-da>]
+#let hl-datx(body) = [#[#body]<hl-datx>]
+#let hl-tx(body) = [#[#body]<hl-tx>]
+
+#let qhl-bg(body) = [#[#body]<qhl-bg>]
+#let qhl-bgla(body) = [#[#body]<qhl-bgla>]
+#let qhl-la(body) = [#[#body]<qhl-la>]
+#let qhl-laac(body) = [#[#body]<qhl-laac>]
+#let qhl-ac(body) = [#[#body]<qhl-ac>]
+#let qhl-acda(body) = [#[#body]<qhl-acda>]
+#let qhl-da(body) = [#[#body]<qhl-da>]
+#let qhl-datx(body) = [#[#body]<qhl-datx>]
+#let qhl-tx(body) = [#[#body]<qhl-tx>]
+
+#let c-bg(cs, body) = [
+  #set text(fill: irgo(cs, bg));
+  #body
+  ]
+
+#let c-bgla(cs, body) = [
+  #set text(fill: color.mix(
+    irgo(cs, bg),
+    irgo(cs, la),
+    ))
+  #body
+  ]
+
+#let c-la(cs, body) = [
+  #set text(fill: irgo(cs, la));
+  #body
+  ]
+
+#let c-laac(cs, body) = [
+  #set text(fill: color.mix(
+    irgo(cs, la),
+    irgo(cs, ac),
+    ))
+  #body
+  ]
+
+#let c-ac(cs, body) = [
+  #set text(fill: irgo(cs, ac));
+  #body
+  ]
+
+#let c-acda(cs, body) = [
+  #set text(fill: color.mix(
+    irgo(cs, ac),
+    irgo(cs, da),
+    ))
+  #body
+  ]
+
+#let c-da(cs, body) = [
+  #set text(fill: irgo(cs, tx));
+  #body
+  ]
+
+#let c-datx(cs, body) = [
+  #set text(fill: color.mix(
+    irgo(cs, ac),
+    irgo(cs, da),
+    ))
+  #body
+  ]
+
+#let c-tx(cs, body) = [
+  #set text(fill: irgo(cs, tx));
+  #body
+  ]
+
+#let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
+#let cock = text(font:"Noto Sans EgyptHiero", weight: 900)[𓂸];
+#let lenny = text(font: "Segoe UI", "( ͡° ͜ʖ ͡°)");
+
+#let big(n, body) = [ #text(size: 1em + (0.167em * n))[#body] ]
+#let sml(n, body) = [ #text(size: 1em - (0.167em * n))[#body] ]
+#let al-left(body) = [ #align(left)[#body] ]
+#let al-centre(body) = [ #align(center)[#body] ]
+#let al-right(body) = [ #align(right)[#body] ]
+
+#let cpf(label) = cite(label, form: "prose")
+
+#let hr = line(length: 100%)
+
+#let twinfantasy = box(image("twinfantasy.jpg", height: 1.5em, width: 1.5em))
+
+#let solidStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "solid")
+#let dottedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dotted")
+#let dashedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dashed")
+
+#let hl(back, body) = [
+    #box(
+      inset: (x: 0pt),
+      outset: (y: 0.45em),
+      stroke: (y: solidStroke(back)),
+      fill: none,
+    )[
+      #box(
+        inset: (x: 0.33em),
+        outset: (y: 0.3em),
+        fill: back,
+      )[#text()[#strong[#body]]]
+    ]
+  ]
+
+  #let squarehl(back, body) = [
+    #box(
+      inset:(x: 0.15em),
+      outset: (y: 0.45em),
+      stroke: (solidStroke(back)),
+      fill: none,
+    )[
+      #box(
+        inset: (x: 0.33em),
+        outset: (y: 0.35em, x: 0.05em),
+        fill: back,
+      )[#text()[#strong[#body]]]
+    ]
+  ]
+
+  #let compCont(cw: 100%*2/3, ..bodies) = [
     #align(center)[#block(width: cw)[
       #stack(
         dir: ttb,
@@ -17,10 +156,13 @@
   if(body != ""){[#[#body]<ccb-bgla>]},
   )
 
+
+
 #let unhead(cw: 100%*2/3, body) = compCont(
   cw: cw,
   [#[#body]<cct-tx>]
 )
+
 
 #let docu(
   // DETERMINES WHAT KIND OF DOCUMENT IT WILL BE. CHECK THE VARIABLE validDocTypes A BIT BELOW.
@@ -114,7 +256,7 @@
     panic("Field `docutype` must be a string or an integer!")
   }
 
-  if (type(docutype) not in (str, int) and docutype not in validDoctypes) {
+  if (type(docutype) not in (str, int) and doctype not in validDoctypes) {
     panic("Invalid doctype!")
   }
   if (type(author) != str and type(author) != array) {
@@ -123,28 +265,26 @@
 
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
 
-  let bg = rgb("#F8F4F1") // BG; 50
-  let la = rgb("#b4bdf2") // lightAccent; 200
-  let ac = rgb("#5c6ed3") // Accent; 600
-  let da = rgb("#38378F") // darkAccent; 800
-  let tx = rgb("#0E0E25") // Text; 950
+  let bg = rgb(coll.default.bg) // BG; 50
+  let la = rgb(coll.default.la) // lightAccent; 200
+  let ac = rgb(coll.default.ac) // Accent; 600
+  let da = rgb(coll.default.da) // darkAccent; 800
+  let tx = rgb(coll.default.tx) // Text; 950
 
   if (coll.at(colsc, default: "nane") != "nane") {
     bg = if(bgtint == "pine") {
-      color.mix((rgb(eval("coll." + colsc, scope: (coll: coll)).bg), 33%), (rgb("#EFEBE9"), 67%))
+      color.mix((irgo(colsc, bg), 33%), (rgb("#EFEBE9"), 67%))
     } else if (bgtint == "grey") {
-      rgb(eval("coll." + colsc, scope: (coll: coll)).bg).desaturate(100%)
+      irgo(colsc, bg).desaturate(100%)
     } else {
-      rgb(eval("coll." + colsc, scope: (coll: coll)).bg)
+      irgo(colsc, bg)
     }
-    tx = rgb(eval("coll." + colsc, scope: (coll: coll)).tx)
-    ac = rgb(eval("coll." + colsc, scope: (coll: coll)).ac)
-    la = rgb(eval("coll." + colsc, scope: (coll: coll)).la)
-    da = rgb(eval("coll." + colsc, scope: (coll: coll)).da)
+    tx = irgo(colsc, tx)
+    ac = irgo(colsc, ac)
+    la = irgo(colsc, la)
+    da = irgo(colsc, da)
   }
-  let solidStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "solid")
-  let dottedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dotted")
-  let dashedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dashed")
+
 
   let bgla = color.mix(bg, la)
   let laac = color.mix(la, ac)
@@ -1343,133 +1483,3 @@
 // TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS ---
 
 
-#let bg(body) = [#[#body]<t-bg>]
-#let bgla(body) = [#[#body]<t-bgla>]
-#let la(body) = [#[#body]<t-la>]
-#let laac(body) = [#[#body]<t-laac>]
-#let ac(body) = [#[#body]<t-ac>]
-#let acda(body) = [#[#body]<t-acda>]
-#let da(body) = [#[#body]<t-da>]
-#let datx(body) = [#[#body]<t-datx>]
-#let tx(body) = [#[#body]<t-tx>]
-
-#let hl-bg(body) = [#[#body]<hl-bg>]
-#let hl-bgla(body) = [#[#body]<hl-bgla>]
-#let hl-la(body) = [#[#body]<hl-la>]
-#let hl-laac(body) = [#[#body]<hl-laac>]
-#let hl-ac(body) = [#[#body]<hl-ac>]
-#let hl-acda(body) = [#[#body]<hl-acda>]
-#let hl-da(body) = [#[#body]<hl-da>]
-#let hl-datx(body) = [#[#body]<hl-datx>]
-#let hl-tx(body) = [#[#body]<hl-tx>]
-
-#let qhl-bg(body) = [#[#body]<qhl-bg>]
-#let qhl-bgla(body) = [#[#body]<qhl-bgla>]
-#let qhl-la(body) = [#[#body]<qhl-la>]
-#let qhl-laac(body) = [#[#body]<qhl-laac>]
-#let qhl-ac(body) = [#[#body]<qhl-ac>]
-#let qhl-acda(body) = [#[#body]<qhl-acda>]
-#let qhl-da(body) = [#[#body]<qhl-da>]
-#let qhl-datx(body) = [#[#body]<qhl-datx>]
-#let qhl-tx(body) = [#[#body]<qhl-tx>]
-
-#let c-bg(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = rgb(eval("coll." + cs, scope: (coll: coll)).bg)
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-bgla(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = color.mix(
-      rgb(eval("coll." + cs, scope: (coll: coll)).bg),
-      rgb(eval("coll." + cs, scope: (coll: coll)).la),
-    )
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-la(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = rgb(eval("coll." + cs, scope: (coll: coll)).la)
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-laac(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = color.mix(
-      rgb(eval("coll." + cs, scope: (coll: coll)).la),
-      rgb(eval("coll." + cs, scope: (coll: coll)).ac),
-    )
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-ac(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = rgb(eval("coll." + cs, scope: (coll: coll)).ac)
-  }
-  #set text(fill: dum);
-  #body
-  ]
-
-#let c-acda(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = color.mix(
-      rgb(eval("coll." + cs, scope: (coll: coll)).ac),
-      rgb(eval("coll." + cs, scope: (coll: coll)).da),
-    )
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-da(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = rgb(eval("coll." + cs, scope: (coll: coll)).da)
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-datx(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = color.mix(
-      rgb(eval("coll." + cs, scope: (coll: coll)).da),
-      rgb(eval("coll." + cs, scope: (coll: coll)).tx),
-    )
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let c-tx(cs, body) = [
-  #let dum = black;
-  #if (coll.at(cs, default: "nane") != "nane") {
-    dum = rgb(eval("coll." + cs, scope: (coll: coll)).tx)
-  } #set text(fill: dum);
-  #body
-  ]
-
-#let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
-#let cock = text(font:"Noto Sans EgyptHiero", weight: 900)[𓂸];
-#let lenny = text(font: "Segoe UI", "( ͡° ͜ʖ ͡°)");
-
-#let big(n, body) = [ #text(size: 1em + (0.167em * n))[#body] ]
-#let sml(n, body) = [ #text(size: 1em - (0.167em * n))[#body] ]
-#let al-left(body) = [ #align(left)[#body] ]
-#let al-centre(body) = [ #align(center)[#body] ]
-#let al-right(body) = [ #align(right)[#body] ]
-
-#let cpf(label) = cite(label, form: "prose")
-
-#let hr = line(length: 100%)
-
-#let twinfantasy = box(image("twinfantasy.jpg", height: 1.5em, width: 1.5em))
