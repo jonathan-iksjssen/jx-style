@@ -1,17 +1,17 @@
 #import "irgot.typ": coll
 #import "jx-date.typ": *
 
-#let irgo(cs, val) = coll.at(cs, default: "default").val
+#let irgo(cs, val) = coll.at(cs, default: "default").at(val)
 
-#let bg(body) = [#[#body]<t-bg>]
-#let bgla(body) = [#[#body]<t-bgla>]
-#let la(body) = [#[#body]<t-la>]
-#let laac(body) = [#[#body]<t-laac>]
-#let ac(body) = [#[#body]<t-ac>]
-#let acda(body) = [#[#body]<t-acda>]
-#let da(body) = [#[#body]<t-da>]
-#let datx(body) = [#[#body]<t-datx>]
-#let tx(body) = [#[#body]<t-tx>]
+#let q-bg(body) = [#[#body]<t-bg>]
+#let q-bgla(body) = [#[#body]<t-bgla>]
+#let q-la(body) = [#[#body]<t-la>]
+#let q-laac(body) = [#[#body]<t-laac>]
+#let q-ac(body) = [#[#body]<t-ac>]
+#let q-acda(body) = [#[#body]<t-acda>]
+#let q-da(body) = [#[#body]<t-da>]
+#let q-datx(body) = [#[#body]<t-datx>]
+#let q-tx(body) = [#[#body]<t-tx>]
 
 #let hl-bg(body) = [#[#body]<hl-bg>]
 #let hl-bgla(body) = [#[#body]<hl-bgla>]
@@ -265,26 +265,17 @@
 
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
 
-  let bg = rgb(coll.default.bg) // BG; 50
-  let la = rgb(coll.default.la) // lightAccent; 200
-  let ac = rgb(coll.default.ac) // Accent; 600
-  let da = rgb(coll.default.da) // darkAccent; 800
-  let tx = rgb(coll.default.tx) // Text; 950
-
-  if (coll.at(colsc, default: "nane") != "nane") {
-    bg = if(bgtint == "pine") {
+  let bg = if(bgtint == "pine") {
       color.mix((irgo(colsc, bg), 33%), (rgb("#EFEBE9"), 67%))
     } else if (bgtint == "grey") {
-      irgo(colsc, bg).desaturate(100%)
+      irgo(colsc, "bg").desaturate(100%)
     } else {
-      irgo(colsc, bg)
-    }
-    tx = irgo(colsc, tx)
-    ac = irgo(colsc, ac)
-    la = irgo(colsc, la)
-    da = irgo(colsc, da)
-  }
-
+      irgo(colsc, "bg")
+    } // BG; 50
+  let la = irgo(colsc, "la") // lightAccent; 200
+  let ac = irgo(colsc, "ac") // Accent; 600
+  let da = irgo(colsc, "da") // darkAccent; 800
+  let tx = irgo(colsc, "tx") // Text; 950
 
   let bgla = color.mix(bg, la)
   let laac = color.mix(la, ac)
