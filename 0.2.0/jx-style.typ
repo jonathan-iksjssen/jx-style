@@ -99,6 +99,7 @@
 #let al-left(body) = [ #align(left)[#body] ]
 #let al-centre(body) = [ #align(center)[#body] ]
 #let al-right(body) = [ #align(right)[#body] ]
+#let centre = center
 
 #let cpf(label) = cite(label, form: "prose")
 
@@ -1298,6 +1299,8 @@
   // DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG ---
 
   if (debug) {
+    {
+
     heading(outlined: false, numbering: none)[DEBUG MODE]
     raw(repr(doctype))
     [\ ]
@@ -1466,6 +1469,7 @@
     heading(outlined: false, numbering: "1")[END OF DEBUG CONTENT]
 
     rpcoverpage()
+}
   } else {
     body
   }
