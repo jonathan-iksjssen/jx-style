@@ -1,7 +1,11 @@
 #import "irgot.typ": coll
+#import "catppuccin.typ": *
 #import "jx-date.typ": *
 
 #let irgo(cs, val) = coll.at(cs, default: "default").at(val)
+
+#let arogradient = gradient.linear(ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%) , ctp-moch.green.transparentize(50%), irgo("default", "bg"), ctp-moch.subtext1.transparentize(50%), ctp-moch.overlay2.transparentize(50%))
+#let arom(body) = highlight(fill: arogradient,body)
 
 #let q-bg(body) = [#[#body]<t-bg>]
 #let q-bgla(body) = [#[#body]<t-bgla>]
@@ -556,7 +560,7 @@
       )[#block(
         stroke: (y: solidStroke(th: 2pt, da)),
         width: 100%,
-        inset: (y: 1em, left: 0.25em),
+        inset: (y: 1em, left: if(flags.contains("no-h1-indent")){0em}else{0.25em}),
         height: auto
       )[
       #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
