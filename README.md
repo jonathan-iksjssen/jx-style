@@ -60,6 +60,8 @@ If you haven't heard, `typst` is a newfangled document typesetting system akin t
 
 </details>
 
+ㅤ
+
 # Parts
 
 There are four main parts of this package that are important:

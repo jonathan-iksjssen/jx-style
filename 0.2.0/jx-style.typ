@@ -271,7 +271,7 @@
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
 
   let bg = if(bgtint == "pine") {
-      color.mix((irgo(colsc, bg), 33%), (rgb("#EFEBE9"), 67%))
+      color.mix((irgo(colsc, "bg"), 33%), (rgb("#EFEBE9"), 67%))
     } else if (bgtint == "grey") {
       irgo(colsc, "bg").desaturate(100%)
     } else {
@@ -331,6 +331,21 @@
 
 
   show raw: set text(font: "Iosevka SS14", size: fz)
+
+  show raw.where(block: false): b => box(
+    fill: bgla.transparentize(50%),
+    radius: 0.25em,
+    inset: (x: 0.25em),
+    outset: (y: 0.25em)
+    )[#b]
+
+  show raw.where(block: true): b => align(center)[
+    #block(
+      fill: bgla.transparentize(50%),
+    radius: 0.25em,
+    inset: 1em
+    )[#b]
+  ]
 
   set par(justify: true, leading: 0.9em)
   show par: set block(spacing: 2em)
@@ -505,14 +520,14 @@
       #block(
         width: 100%,
         fill: none,
-        stroke: (y: solidStroke(th: 2pt, tx)),
+        stroke: (bottom: solidStroke(th: 2pt, tx)),
         inset: (y: 3pt),
       )[
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: color.mix(bg, bgla), align: left)[#counter(heading).display()],
-          grid.cell(fill: color.mix(bg, bgla))[#hy.body],
+          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell()[#hy.body],
         )
       ]
 
@@ -603,14 +618,14 @@
       #block(
         width: 100%,
         fill: none,
-        stroke: (y: solidStroke(th: 2pt, ac)),
+        stroke: (bottom: solidStroke(th: 2pt, ac)),
         inset: (y: 3pt),
       )[
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: color.mix(bg, bgla), align: left)[#counter(heading).display()],
-          grid.cell(fill: color.mix(bg, bgla))[#hy.body],
+          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell()[#hy.body],
         )
       ]
 
@@ -665,20 +680,19 @@
     ]
   } else if (headingstyle == "simple") {
     [
-
       // -- H3 SIMPLE STYLE
       #set text(size: 1.083em, fill: da, weight: "bold")
       #block(
         width: 100%,
         fill: none,
-        stroke: (y: solidStroke(th: 2pt, la)),
+        stroke: (bottom: solidStroke(th: 2pt, la)),
         inset: (y: 3pt),
       )[
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: color.mix(bg, bgla), align: left)[#counter(heading).display()],
-          grid.cell(fill: color.mix(bg, bgla))[#hy.body],
+          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell()[#hy.body],
         )
       ]
 
@@ -741,8 +755,8 @@
       // -- H4 SIMPLE STYLE
       #set text(size: 1em, fill: tx, weight: "bold")
       #box(
-        inset: (x: 0.5em, y: 0.33em),
-        stroke: (y: solidStroke(tx)),
+        inset: (y: 0.33em),
+        stroke: (bottom: solidStroke(tx)),
       )[#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
@@ -804,8 +818,8 @@
       // -- H5 SIMPLE STYLE
       #set text(size: 1em, fill: da, weight: "bold")
       #box(
-        inset: (x: 0.5em, y: 0.33em),
-        stroke: (y: solidStroke(da)),
+        inset: (y: 0.33em),
+        stroke: (bottom: solidStroke(da)),
       )[#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
@@ -867,8 +881,8 @@
       // -- H6 SIMPLE STYLE
       #set text(size: 1em, fill: ac, weight: "bold")
       #box(
-        inset: (x: 0.5em, y: 0.33em),
-        stroke: (y: solidStroke(acda)),
+        inset: (y: 0.33em),
+        stroke: (bottom: solidStroke(acda)),
       )[#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
@@ -1421,8 +1435,17 @@
 
       The quadratic equation is $x = (-b +- sqrt(b^2 -4\a\c))/(2a)$. Euler's identity
       is $e^(pi\i) + 1 = 0$, and the idea that $e = m\c^2+p\c$ does your mom and your
-      senator.
+      senator. `PINGAS`
       $ f(a,b,c,d,x) = a\x^3 + b\x^2 + c\x + d $
+
+      ```cs
+      namespace joniksj;
+      public class EntryPoint() {
+        public static void Main() {
+          console.log("snooPINGAS usual, I see.")
+        }
+      }
+      ```
 
       #figure(
         table(
