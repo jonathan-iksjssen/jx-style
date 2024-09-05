@@ -3,6 +3,8 @@
 #import "jx-date.typ": *
 
 #let irgo(cs, val) = coll.at(cs, default: "default").at(val)
+#let rp-author(ln, fn) = (lastname: str(ln), firstname: str(fn))
+#let img(body) = [#[#body]<img>]
 
 #let arogradient = gradient.linear(ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%) , ctp-moch.green.transparentize(50%), irgo("default", "bg"), ctp-moch.subtext1.transparentize(50%), ctp-moch.overlay2.transparentize(50%))
 #let arom(body) = highlight(fill: arogradient,body)
@@ -200,7 +202,7 @@
   rp-subtitle: [],
   
   rp-supplement: [],
-  bp-supplement2: [],
+  rp-supplement2: [],
   rp-header: [],
 
   // PAPER SUBJECT.
@@ -226,11 +228,15 @@
   bgtint: none,
   headingstyle: "block",
   headingnum: "1.1.1",
+  headingprefix: "",
   headingsup: "Section",
   size: "print",
   font: "Iosevka SS14",
+  font2: "",
   fw: "regular",
   date: datetime.today().display("[day padding:none] [month repr:short] [year repr:full]"),
+  refsup: "§",
+  linespacing: 1,
   columns: 1,
   outcols: 1,
   fz: 12pt,
@@ -330,7 +336,7 @@
   )
 
 
-  show raw: set text(font: "Iosevka SS14", size: fz)
+  show raw: set text(font: "Iosevka SS14", size: 1.25em)
 
   show raw.where(block: false): b => box(
     fill: bgla.transparentize(50%),
@@ -347,7 +353,7 @@
     )[#b]
   ]
 
-  set par(justify: true, leading: 0.9em)
+  set par(justify: true, leading: linespacing * 0.9em)
   show par: set block(spacing: 2em)
 
   show math.equation: m => if (font.contains("Fira")) {
@@ -409,15 +415,13 @@
   set list(tight: false, marker: ([#sym.circle.filled.small], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]))
   set terms(tight: false)
 
-  show enum.item: a => block(inset: (y: 0.167em))[#a]
-  show list.item: a => block(inset: (y: 0.167em))[#a]
   show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #emph(k.description) #linebreak()]
 
   // PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE ---
 
   set document(
     title: if (title == "") { } else {
-      if(code != ""){code; sym.space; "-"; sym.space}
+      if(cod != ""){code; sym.space; "-"; sym.space}
       title
     },
     author: if (type(author) == str) {
@@ -443,6 +447,8 @@
     } else if (size == "longlong") { 14in
     } else if (size == "book-a") { 5.75in 
     } else if (size == "book-b") { 7.5in
+    } else if (size == "square") { 8in
+    } else if (size == "auto") { 6in
     } else { 8.5in },
     height: if (size == "longbond") { 13in 
     } else if (size == "longbond-l") { 8.5in 
@@ -455,6 +461,8 @@
     } else if (size == "longlong") { 8in
     } else if (size == "book-a") { 9in 
     } else if (size == "book-b") { 10.25in
+    } else if (size == "square") { 8in
+    } else if (size == "auto") { auto
     } else { 11in },
     margin: (
       y: 0.75in,
@@ -472,9 +480,9 @@
       #if (flags.contains("nofoot")) {} else [
 
         #if(flags.contains("blankfoot")) {} else [
-          #if (cod != "") { [ [#code] ] } else {}
-        #if (rp-title != "") { emph[#rp-title] } else if (title != "") { emph[#title] }
-      ] #h(1fr) #strong[#counter(page).display()]
+          #if (cod != "") { code } else {}
+        #if (rp-title != "" and not flags.contains("centrefoot")) { emph[#rp-title] } else if (title != "" and not flags.contains("centrefoot")) { emph[#title] }
+      ] #h(1fr) #strong[#counter(page).display()]#if(flags.contains("centrefoot")){h(1fr)}
       ]
 
     ],
@@ -562,8 +570,8 @@
       #set block(breakable: false)
     #block(
     width: 100%,
-    height: 8em,
-    inset: (top: 1em)
+    height: auto,
+    inset: (top: 0em)
 )[
     #set par(leading: 0.5em)
     #align(top)[
@@ -573,7 +581,7 @@
         inset: (y: 4pt),
         height: auto
       )[#block(
-        stroke: (y: solidStroke(th: 2pt, da)),
+        stroke: (y: solidStroke(th: 2pt, datx)),
         width: 100%,
         inset: (y: 1em, left: if(flags.contains("no-h1-indent")){0em}else{0.25em}),
         height: auto
@@ -586,7 +594,7 @@
 ]
     ]
   } else {
-    set text(1.25em); hy
+    set text(1.25em); [#hy]
   }
 
   // -- HEADING 2 -- HEADING 2 -- HEADING 2 -- HEADING 2 --
@@ -655,7 +663,7 @@
       ]
 
     ]
-  } else { set text(1.167em); hy }
+  } else { set text(1.167em); [#hy] }
 
   // -- HEADING 3 -- HEADING 3 -- HEADING 3 -- HEADING 3 --
   show heading.where(level: 3): hy => if (headingstyle in ("block", "book")) {
@@ -722,18 +730,17 @@
       ]
 
     ]
-  } else { set text(1.083em); hy }
+  } else { set text(1.083em); [#hy] }
 
   // -- HEADING 4 -- HEADING 4 -- HEADING 4 -- HEADING 4 --
   show heading.where(level: 4): hy => if (headingstyle in ("block", "book")) {
-    [
+    parbreak(); box[
       // -- H4 BLOCK STYLE
-      #parbreak()
       #set text(size: 1em, fill: bg, weight: "bold")
       #box(
-        inset: (x: 0pt),
+        inset: (right: 0.15em),
         outset: (y: 0.4em),
-        stroke: (y: solidStroke(da)),
+        stroke: (left: none, rest: solidStroke(da)),
         fill: none,
       )[
         #stack(
@@ -749,6 +756,7 @@
       ]
 
     ]
+    h(0.5em)
   } else if (headingstyle == "simple") {
     [
 
@@ -785,18 +793,18 @@
       ]
 
     ]
-  } else { hy }
+  } else { [#hy] }
 
   // -- HEADING 5 -- HEADING 5 -- HEADING 5 -- HEADING 5 --
   show heading.where(level: 5): hy => if (headingstyle in ("block", "book")) {
-    [
+    parbreak(); box[
       // -- H5 BLOCK STYLE
-      #parbreak()
+      
       #set text(size: 1em, fill: bg, weight: "bold")
       #box(
-        inset: (x: 0pt),
+        inset: (right: 0.15em),
         outset: (y: 0.4em),
-        stroke: (y: solidStroke(acda)),
+        stroke: (left: none, rest: solidStroke(acda)),
         fill: none,
       )[
         #stack(
@@ -812,6 +820,7 @@
       ]
 
     ]
+    h(0.5em)
   } else if (headingstyle == "simple") {
     [
 
@@ -848,18 +857,17 @@
       ]
 
     ]
-  } else { hy }
+  } else { [#hy] }
 
   // -- HEADING 6 -- HEADING 6 -- HEADING 6 -- HEADING 6 --
   show heading.where(level: 6): hy => if (headingstyle in ("block", "book")) {
-    [
+    parbreak(); box[
       // -- H6 BLOCK STYLE
-      #parbreak()
       #set text(size: 1em, fill: tx, weight: "bold")
       #box(
-        inset: (x: 0pt),
+        inset: (right: 0.15em),
         outset: (y: 0.4em),
-        stroke: (y: solidStroke(laac)),
+        stroke: (left: none, rest: solidStroke(laac)),
         fill: none,
       )[
         #stack(
@@ -874,7 +882,7 @@
         )
       ]
 
-    ]
+    ]; h(0.5em)
   } else if (headingstyle == "simple") {
     [
 
@@ -911,13 +919,14 @@
       ]
 
     ]
-  } else { hy }
+  } else { [#hy] }
   show heading: set block(spacing: 1em)
 
   // #endregion
 
-  // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS ---
+  // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHYcite AND CITATIONS ---
 
+  set ref(supplement: refsup)
   set cite(style: if (doctype in ("businessPlan", "paper")) {"apa"} else {"ieee"})
   show cite: set text(..fill-ac)
   set bibliography(style: if (doctype in ("businessPlan", "paper")) {"apa"} else {"ieee"}, title: "References", full: true)
@@ -930,8 +939,8 @@
 
   // IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES ---
 
-  set image(fit: "contain", width: 40%)
-  show image: h => align(center)[#rect(stroke: solidStroke(th: 3pt, tx), inset: 0in, outset: 0in, fill: none)[#h]]
+  set image(fit: "contain")
+  show <img>: h => align(center)[#rect(stroke: solidStroke(th: 3pt, tx), inset: 0in, outset: 0in, fill: none)[#h]]
 
   // TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES ---
 
@@ -1133,7 +1142,7 @@
       #block(spacing: 3em, width: 200% / 3)[#text(size: 1.5em)[#rp-supplement]]
     ]
 
-    #align(center + horizon)[ #bp-supplement2 ]
+    #align(center + horizon)[ #rp-supplement2 ]
 
     #align(center + bottom)[
       _Submitted by:_ #linebreak()
@@ -1165,19 +1174,20 @@
     columns: 1,
   )[
 
-    #align(center + top)[
+    #place(center + top)[#align(center + top)[
       #strong[#rp-school] \
       #emph[#rp-subject] \
       #section
-    ]
+    ]]
 
-    #align(center + horizon)[
-      #block(spacing: 3em)[#text(size: 3em, weight: 900)[#par(justify:false)[#strong[#rp-title]]]]
-      #block(spacing: 3em)[#text(size: 2em)[#rp-subtitle]]
-      #block(spacing: 3em, width: 200% / 3)[#text(size: 1.5em)[#rp-supplement]]
-    ]
+    #place(center + horizon)[#align(center + horizon)[
+      #if(rp-title != ""){block(spacing: 3em)[#text(size: 3em, weight: 900)[#par(justify:false)[#strong[#rp-title]]]]}
+      #if(rp-subtitle != ""){block(spacing: 3em)[#text(size: 2em)[#rp-subtitle]]}
+      #if(rp-supplement != ""){block(spacing: 3em, width: 200% / 3)[#text(size: 1.5em)[#rp-supplement]]}
+      #if(rp-supplement2 != ""){[#block(spacing: 3em, width: 200% / 3)[#text(size: 1.5em)[#rp-supplement2]]]}
+    ]]
 
-    #align(center + bottom)[
+    #place(center + bottom)[#align(center + bottom)[
       _Submitted by:_ #linebreak()
       #if (rp-authors != "") {
         [
@@ -1190,7 +1200,7 @@
       _Submitted to:_ #linebreak()
       #strong[#rp-submittedTo] #linebreak()
       #date
-    ]
+    ]]
 
   ]
 
@@ -1209,10 +1219,8 @@
 
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
 
-  let sdheader() = [
-    #strong[#author] #h(1fr) #if (code != "") {
-      [#[#code]<hl-la>]
-    }
+  let sdheader() = align(if(flags.contains("centrehead")){center}else{left})[
+    #strong[#author] #h(1fr) #if (code != "") {code}
     #linebreak()
     #box[#stack(
         dir: ltr,
@@ -1222,12 +1230,12 @@
         },
         [#[#emph[#title]]<hl-ac>],
       )] #h(1fr) #daterepr
-      #v(-1em)
-    #line(length: 100%, stroke: solidStroke(tx))
+      #if(flags.contains("nodivider")){}else{[#v(-1em)
+    #line(length: 100%, stroke: solidStroke(tx))]}
 
   ]
 
-  let notesheader() = [
+  let notesheader() = align(if(flags.contains("centrehead")){center}else{left})[
     #align(center)[#strong[#author]
       ·
       #box[#stack(
@@ -1244,8 +1252,9 @@
       }
       ·
       #daterepr
-      #v(-1em)
-      #line(length: 100%, stroke: solidStroke(tx))]
+      #if(not flags.contains("nodivider")){}else{[#v(-1em)
+      #line(length: 100%, stroke: solidStroke(tx))]}
+      ]
   ]
 
   if (doctype == "schooldoc") {
@@ -1257,7 +1266,7 @@
 
   // ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT ---
 
-  let articleheader(verbose: false) = [
+  let articleheader(verbose: false) = align(if(flags.contains("centrehead")){center}else{left})[
     #[#text(weight: 900)[#title]]<b1> #linebreak()
     #if (subtitle != "") {
       [#strong[#[#subtitle]<b3> ] #linebreak()]
@@ -1270,8 +1279,8 @@
         *Tags:* #(..tags).join(", ")
       ]
     }
-    #v(-1em)
-    #line(length: 100%, stroke: solidStroke(tx))
+    #if(flags.contains("nodivider")){}else{[#v(-1em)
+    #line(length: 100%, stroke: solidStroke(tx))]}
   ]
 
   if (doctype == "article") {
@@ -1283,7 +1292,7 @@
 
   // WRITING FORMAT --- WRITING FORMAT --- WRITING FORMAT --- WRITING FORMAT --- WRITING FORMAT --- WRITING FORMAT ---
 
-  let writingheader(verbose: false) = [
+  let writingheader(verbose: false) = align(if(flags.contains("centrehead")){center}else{left})[
     #[#text(weight: 900)[#title]]<b1> #linebreak()
     #strong[Description: ] #emph[#description] #linebreak()
     #if (verbose == true) {
@@ -1292,8 +1301,8 @@
         *Tags:* #(..tags).join(", ")
       ]
     }
-    #v(-1em)
-    #line(length: 100%, stroke: solidStroke(tx))
+    #if(not flags.contains("nodivider")){}else{[#v(-1em)
+    #line(length: 100%, stroke: solidStroke(tx))]}
   ]
 
   if (doctype == "writing") {
@@ -1306,11 +1315,11 @@
   // DIARY ENTRY FORMAT --- DIARY ENTRY FORMAT --- DIARY ENTRY FORMAT --- DIARY ENTRY FORMAT --- DIARY ENTRY FORMAT ---
 
   let diaryheader() = [
-    #[ #daterepr ]<b1>
+    #align(if(flags.contains("centrehead")){center}else{left})[ #daterepr ]<b1>
   ]
 
   if (doctype == "diaryEntry") {
-    flags.push("blankfoot")
+    flags.push("centerfoot")
     diaryheader()
   }
 
@@ -1501,7 +1510,3 @@
     body
   }
 }
-
-// TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS --- TEXT COLOUR FUNCTIONS ---
-
-

@@ -12,7 +12,7 @@
 	"altyellow": (
 		"bg": rgb("#FEFeE8"),	"tx": rgb("#423006"),	"ac": rgb("#caa204"),	"la": rgb("#fef88a"),	"da": rgb("#85610e") ),
 	"pear": (
-		"bg": rgb("#FBFDE8"),	"tx": rgb("#233801"),	"ac": rgb("#989709"),	"la": rgb("#ECF594"),	"da": rgb("#625810") ),
+		"bg": rgb("#FBFDE8"),	"tx": rgb("#2E2F06"),	"ac": rgb("#98A309"),	"la": rgb("#ECF994"),	"da": rgb("#626210") ),
 	"lime": (
 		"bg": rgb("#F7FEE7"),	"tx": rgb("#1A2E05"),	"ac": rgb("#65A30D"),	"la": rgb("#D9F99D"),	"da": rgb("#3F6212") ),
 	"limegreen": (
@@ -102,7 +102,7 @@
 	"nord-light": (
 		"bg": rgb("#ECEFF4"),	"tx": rgb("#2E3440"),	"ac": rgb("#88C0D0"),	"la": rgb("#D8DEE9"),	"da": rgb("#4C566A") ),
 	"default": (
-		"bg": rgb("#F8F4F1"),	"tx": rgb("#0E0E25"),	"ac": rgb("#5c6ed3"),	"la": rgb("#b4bdf2"),	"da": rgb("#38378F") ),
+		"bg": rgb("#F8F4F1"),	"tx": rgb("#0E0E25"),	"ac": rgb("#5c64d3"),	"la": rgb("#b4bcf2"),	"da": rgb("#38378F") ),
 	"altdark": (
 		"bg": rgb("#272736"),	"tx": rgb("#f8ece1"),	"ac": rgb("#a9a8ee"),	"la": rgb("#484764"),	"da": rgb("#C8BCA1") ),
 	"dark": (
@@ -128,4 +128,13 @@
 	"days-of-week": (
 		"monday": rgb("#93C5FD50"),	"tuesday": rgb("#FCA5A550"),	"wednesday": rgb("#86EFAC50"),	"thursday": rgb("#FDE04750"),	"friday": rgb("#67E8F950"),	"saturday": rgb("#F0ABFC50"),	"sunday": rgb("#D4D4D450") )
 )
-
+#set text(font: "Iosevka SS14", size: 16pt)
+#set par(leading: 0em)
+#for i in coll.keys() {
+	if(i == "days-of-week") {continue;}
+	box(inset: 1em)[#i]; h(1fr)
+	for k in coll.at(i).keys() {
+		box(rect(width: 0.75in, fill: coll.at(i).at(k)), stroke: 2pt + black)
+	}
+	linebreak();
+}
