@@ -5,6 +5,8 @@
 #let irgo(cs, val) = coll.at(cs, default: "default").at(val)
 #let rp-author(ln, fn) = (lastname: str(ln), firstname: str(fn))
 #let img(body) = [#[#body]<img>]
+#let inlineimage(..args) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, image(..args, width: auto))
+#let inline(body) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, body)
 
 #let arogradient = gradient.linear(ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%) , ctp-moch.green.transparentize(50%), irgo("default", "bg"), ctp-moch.subtext1.transparentize(50%), ctp-moch.overlay2.transparentize(50%))
 #let arom(body) = highlight(fill: arogradient,body)
@@ -96,12 +98,23 @@
   #body
   ]
 
+#let triangle = polygon.regular.with(vertices: 3)
+#let pentagon = polygon.regular.with(vertices: 5)
+#let hexagon = polygon.regular.with(vertices: 6)
+#let heptagon = polygon.regular.with(vertices: 7)
+#let octagon = polygon.regular.with(vertices: 8)
+
 #let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
 #let cock = text(font:"Noto Sans EgyptHiero", weight: 900)[𓂸];
-#let lenny = text(font: "Segoe UI", "( ͡° ͜ʖ ͡°)");
+#let lenny = text("( ͡° ͜ʖ ͡°)");
+#show "« ": [«~]; #show " »": [~»]; #show "‹ ": [‹~]; #show " ›": [~›]
 
-#let big(n, body) = [ #text(size: 1em + (0.167em * n))[#body] ]
-#let sml(n, body) = [ #text(size: 1em - (0.167em * n))[#body] ]
+
+
+#let signature(n: 1) = text(font:"JX-Symbols", size: 5em * n)[J]
+
+#let big(n: 2, body) = [ #text(size: 1em * calc.pow(1.2,n))[#body] ]
+#let sml(n: 2, body) = [ #text(size: 1em / calc.pow(1.2,n))[#body] ]
 #let al-left(body) = [ #align(left)[#body] ]
 #let al-centre(body) = [ #align(center)[#body] ]
 #let al-right(body) = [ #align(right)[#body] ]
@@ -109,7 +122,7 @@
 
 #let cpf(label) = cite(label, form: "prose")
 
-#let hr = line(length: 100%)
+#let hr = block(line(length: 100%))
 
 #let twinfantasy = box(image("twinfantasy.jpg", height: 1.5em, width: 1.5em))
 
@@ -163,69 +176,44 @@
   if(body != ""){[#[#body]<ccb-bgla>]},
   )
 
-
-
 #let unhead(cw: 100%*2/3, body) = compCont(
   cw: cw,
   [#[#body]<cct-tx>]
 )
 
-
 #let docu(
-  // DETERMINES WHAT KIND OF DOCUMENT IT WILL BE. CHECK THE VARIABLE validDocTypes A BIT BELOW.
-  docutype: "blankhead",
-
-  // AUTHOR. CAN EITHER BE A STRING OR AN ARRAY. NOT USED FOR PAPERS.
-  author: "",
-
-  // SECTION
-  section: "",
-
-  // // ALL FIELDS BEGINNING WITH rp- and bp- ARE ONLY USED IN PAPERS (i.e. research papers, business plans)
-
-  // PAPER TITLE.
-  rp-title: "",
-
-  // PAPER AUTHORS. IS AN ARRAY IN THE FORMAT OF ( (lastname: string), (firstname: string) )
-  rp-authors: (),
-
-  // PAPER SCHOOL.
-  rp-school: "",
-
-  // PAPER SUBMITTED TO THIS PERSON.
-  rp-submittedTo: "",
-
-  // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
-  rp-keywords: (),
-
-  // EXTRA PAPER SUBTITLES SHOULD THE FORMAT DEMAND IT.
-  rp-subtitle: [],
   
-  rp-supplement: [],
-  rp-supplement2: [],
-  rp-header: [],
+  docutype: "blankhead", // DETERMINES WHAT KIND OF DOCUMENT IT WILL BE. CHECK THE VARIABLE validDocTypes A BIT BELOW.
+  author: "", // AUTHOR. CAN EITHER BE A STRING OR AN ARRAY. NOT USED FOR PAPERS.
 
-  // PAPER SUBJECT.
-  rp-subject: [],
+      // // ALL FIELDS BEGINNING WITH rp- ARE ONLY USED IN PAPERS (i.e. docutypes "paper" and "businessPlan")
+      rp-title: "", // PAPER TITLE.
+      rp-authors: (), // PAPER AUTHORS. IS AN ARRAY IN THE FORMAT OF ( (lastname: string), (firstname: string) )
+      rp-school: "", // PAPER SCHOOL.
+      rp-submittedTo: "", // PAPER SUBMITTED TO THIS PERSON.
+      rp-keywords: (), // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
+      rp-subtitle: [], // EXTRA PAPER SUBTITLES SHOULD THE FORMAT DEMAND IT.
+      rp-supplement: [],
+      rp-supplement2: [],
+      rp-header: [], // PAPER HEADER. 
+      rp-subject: [], // PAPER SUBJECT.
 
-  // //  END OF RESEARCH PAPER SECTION.
+      // // FIELDS EXCLUSIVE TO "schooldoc" OR "notes" DOCUTYPES
+      section: "", // SECTION. HIDDEN BY DEFAULT UNLESS FLAG "showsection" is set
+      subject: "", // SUBJECT THE DOCUMENT IS FOR. ONLY SHOWS UP IN DOCUTYPES "notes" AND "schooldoc".
+      cod: "", // JXC-10 ASSIGNMENT OR DOCUMENT CODE.
 
-  // SUBJECT.
-  subject: "",
+      // // FIELDS EXCLUSIVE TO "writing" and "writingVerbose" DOCUTYPES
+      rating: "", // RATING OF DOCUMENT OR ARTICLE.
+      tags: (), // TAGS OF ARTICLE.
 
-  // TITLE OF DOCUMENT.
-  title: "",
-
-  // SUBTITLE OF DOCUMENT. NOT USED IN ASSIGNMENT DOCS.
-  subtitle: "",
-
-  // DOCUMENT DESCRIPTION.
-  description: "",
-  rating: "",
-  tags: (),
-  cod: "",
-  colsc: "default",
-  bgtint: none,
+  title: "", // TITLE OF DOCUMENT.
+  subtitle: "", // SUBTITLE OF DOCUMENT.
+  description: "", // DOCUMENT DESCRIPTION.
+  
+  // // DOCUMENT SETTINGS
+  colsc: "default", // COLOUR SCHEME OF THE DOCUMENT. SEE irgot.typ
+  bgtint: none, // TINT ON BACKGROUND COLOUR. SEE 
   headingstyle: "block",
   headingnum: "1.1.1",
   headingprefix: "",
@@ -234,12 +222,14 @@
   font: "Iosevka SS14",
   font2: "",
   fw: "regular",
-  date: datetime.today().display("[day padding:none] [month repr:short] [year repr:full]"),
+  date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"),
   refsup: "§",
   linespacing: 1,
   columns: 1,
   outcols: 1,
   fz: 12pt,
+  rawsize: 0.9,
+  imagewidth: 200%/3,
   flags: (),
   debug: false,
   body,
@@ -339,19 +329,43 @@
   show raw: set text(font: "Iosevka SS14", size: 1.25em)
 
   show raw.where(block: false): b => box(
-    fill: bgla.transparentize(50%),
+    fill: la.transparentize(80%),
     radius: 0.25em,
     inset: (x: 0.25em),
-    outset: (y: 0.25em)
-    )[#b]
+    outset: (y: 0.3em),
+    stroke: dottedStroke(la)
+    )[#text(size: 1em * rawsize)[#b]]
 
-  show raw.where(block: true): b => align(center)[
-    #block(
-      fill: bgla.transparentize(50%),
+  show raw.where(block: true): it => {
+  set text(size: 1em * rawsize)
+  show raw.line: it => {
+    let color = if calc.odd(it.number) { color.mix(bg,bgla) } else { bg }
+    let body = if it.body == [] { sym.space } else { it.body }
+    let num = it.number
+    
+    box(
+      fill: color,
+      width: 100%,
+      outset: par.leading / 2,
+      grid(
+        columns:(2em, 1fr),
+        align: (horizon+right, left),
+        inset: (y: 0em, x: 0.5em),
+        sml(n:1.25, q-laac(str(num))), body
+      )
+    )
+  }
+  
+  block(breakable:false)[#it #place(top+right)[#q-ac[[#it.lang]]]]
+}
+
+  show raw.where(block: true): hi => al-centre(block(
+    stroke: dottedStroke(th: 1pt, ac),
+    outset: (par.leading / 2) + 0.5pt,
     radius: 0.25em,
-    inset: 1em
-    )[#b]
-  ]
+    spacing: 2em,
+    width: if(flags.contains("reduced-codeblocks")){200%/3}else{95%},
+    hi))
 
   set par(justify: true, leading: linespacing * 0.9em)
   show par: set block(spacing: 2em)
@@ -361,9 +375,9 @@
   } else if (font.contains("Noto Sans") or font.contains("Noto Mono")) {
     text(font: "Noto Sans Math")[#m]
   } else {
-    text(font: "STIX Two Math")[#m]
+    text(font: "TeX Gyre Schola Math")[#m]
   }
-  show math.equation.where(block: false): set text(size: 1.2em)
+  show math.equation.where(block: false): set text(size: 1em)
   show math.equation.where(block: true): me => [#set text(size: 1.5em); #align(center)[#me]]
 
   show link: set text(..fill-ac)
@@ -371,11 +385,19 @@
   // OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES ---
 
   set outline(depth: 3, indent: 2em, title: if(doctype in ("businessPlan", "paper")) {none} else {"Table of Contents"})
-  show outline.entry.where(level: 1): strong
+  show outline.entry.where(level: 1): ol => if(flags.contains("hl-outlined-h1")){box(outset: par.leading/2, fill: bgla, strong(ol))}else{strong(ol)}
+  show outline.entry.where(level: 2): q-da
+  show outline.entry.where(level: 3): q-ac
   show outline: a => if(doctype in ("businessPlan", "paper")) {
+    show heading: he => {h(1fr) + hl-tx[#he.body] + h(1fr); v(-0.5em);}
     [#page(columns: outcols)[ #align(horizon + center)[#block(width: 200%/3,a)]~] ]
   } else {
-    a
+    show heading: he => text(1em/1.167)[#al-centre[#[#he.body]<cct-datx>]]
+    if(flags.contains("separate-outline")){
+      align(horizon+center,a); pagebreak(weak: true)
+      } else {
+        a
+      }
   }
 
 
@@ -384,7 +406,7 @@
   set quote(block: true)
   show quote: q => [
     #pad(1em)[
-      #block(fill: color.mix(bg, bgla), inset: (x: 2em, y: 2.5em))[
+      #block(breakable: false, fill: color.mix(bg, bgla), inset: (x: 2em, y: 2.5em))[
         #place(
           top + left,
           dx: -1.5em,
@@ -415,7 +437,7 @@
   set list(tight: false, marker: ([#sym.circle.filled.small], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]))
   set terms(tight: false)
 
-  show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #emph(k.description) #linebreak()]
+  show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #emph(k.description)]
 
   // PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE ---
 
@@ -498,7 +520,7 @@
   } else {
     numbering(headingnum, ..nums)
   })
-
+  
   // -- HEADING 1 -- HEADING 1 -- HEADING 1 -- HEADING 1 --
   show heading.where(level: 1): hy => if (headingstyle == "block") {
     [
@@ -596,6 +618,8 @@
   } else {
     set text(1.25em); [#hy]
   }
+
+  show heading.where(level: 1): hy => if(flags.contains("centre-h1")){align(center, hy)}else{hy}
 
   // -- HEADING 2 -- HEADING 2 -- HEADING 2 -- HEADING 2 --
   show heading.where(level: 2): hy => if (headingstyle in ("block", "book")) {
@@ -924,23 +948,42 @@
 
   // #endregion
 
+  
+
   // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHYcite AND CITATIONS ---
 
-  set ref(supplement: refsup)
-  set cite(style: if (doctype in ("businessPlan", "paper")) {"apa"} else {"ieee"})
+  set ref(supplement: if(flags.contains("refsups")){refsup})
+  set cite(style: if ((doctype in ("businessPlan", "paper")) or flags.contains("use-apa")) {"apa"} else {"ieee"})
   show cite: set text(..fill-ac)
-  set bibliography(style: if (doctype in ("businessPlan", "paper")) {"apa"} else {"ieee"}, title: "References", full: true)
+  show cite: a => {
+    if(flags.contains("use-apa") or not flags.contains("super-refs")){a}else{super(a)}
+  }
+
+  set super(typographic: false, size: 0.7em)
+  set sub(typographic: false, size: 0.7em)
+
+  set bibliography(style: if ((doctype in ("businessPlan", "paper")) or flags.contains("use-apa")) {"apa"} else {"ieee"}, title: "References", full: true)
   show bibliography: a => {
-    counter(heading).update(3)
-    set heading(numbering: numbering("*", 1))
+    if(flags.contains("separate-bib")){pagebreak(weak:true)}
+    show heading: h => text(1em/1.167)[#al-centre[#[#h.body]<cct-datx>]]
     a
   }
+  let amper = if(flags.contains("ampersand")){" & "}else{" and "}
+  let thornUpper = if(flags.contains("thorn")){"Þ"}else{"TH"} 
+  let thornMixed = if(flags.contains("thorn")){"Þ"}else{"Th"} 
+  let thornLower = if(flags.contains("thorn")){"þ"}else{"th"} 
+
+  show "th": thornLower
+  show "Th": thornMixed
+  show "TH": thornUpper
+  show " and ": amper
 
 
   // IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES ---
-
-  set image(fit: "contain")
-  show <img>: h => align(center)[#rect(stroke: solidStroke(th: 3pt, tx), inset: 0in, outset: 0in, fill: none)[#h]]
+  
+  set image(fit: "contain", width: 100%)
+  
+  show <img>: h => align(center)[#rect(stroke: dottedStroke(th: 2pt, ac), inset: 0in, outset: 0in, fill: none, width: (imagewidth))[#h]]
 
   // TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES ---
 
@@ -965,7 +1008,11 @@
     inset: 0.5em,
   )
 
-  set grid(inset: 0.33em)
+  set grid(inset: 0.33em, align: if (flags.contains("table-cen")) {
+      horizon + center
+    } else {
+      horizon + left
+    })
 
   show table.cell.where(y: 0): k => strong(text(..fill-bg)[#[#k]])
 
@@ -1220,7 +1267,7 @@
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
 
   let sdheader() = align(if(flags.contains("centrehead")){center}else{left})[
-    #strong[#author] #h(1fr) #if (code != "") {code}
+    #text[#strong[#author]#if(flags.contains("showsection")){text(weight: "regular", style: "italic")[ — #section]}] #h(1fr) #if (code != "") {code}
     #linebreak()
     #box[#stack(
         dir: ltr,
@@ -1236,25 +1283,19 @@
   ]
 
   let notesheader() = align(if(flags.contains("centrehead")){center}else{left})[
-    #align(center)[#strong[#author]
-      ·
-      #box[#stack(
-          dir: ltr,
-          spacing: 0em,
-          if (subject != "") {
-            [#[#subject]<hl-da>]
-          },
-          [#[#emph[Notes]]<hl-ac>],
-        )]
-      ·
-      #if (code != "") {
-        [#[#code]<hl-la>]
-      }
-      ·
-      #daterepr
-      #if(not flags.contains("nodivider")){}else{[#v(-1em)
-      #line(length: 100%, stroke: solidStroke(tx))]}
-      ]
+    #text[#strong[#author]#if(flags.contains("showsection")){text(weight: "regular", style: "italic")[ — #section]}] #h(1fr) #if (code != "") {code}
+    #linebreak()
+    #box[#stack(
+        dir: ltr,
+        spacing: 0em,
+        if (subject != "") {
+          [#[#subject]<hl-da>]
+        },
+        [#[#(sym.angle.l +" Notes " + sym.angle.r)]<hl-ac>],
+      )] #h(1fr) #daterepr
+      #if(flags.contains("nodivider")){}else{[#v(-1em)
+    #line(length: 100%, stroke: solidStroke(tx))]}
+
   ]
 
   if (doctype == "schooldoc") {

@@ -1,4 +1,4 @@
-#let sadave = datetime.today().display("[day padding:none] [month repr:short] [year repr:full]");
+#let sadave = datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]");
 #let daycolours = (
   rgb("#93C5FD50"),
   rgb("#FCA5A550"),
