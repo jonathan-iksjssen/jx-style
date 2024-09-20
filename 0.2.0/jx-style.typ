@@ -160,8 +160,8 @@
     ]
   ]
 
-  #let compCont(cw: 100%*2/3, ..bodies) = [
-    #align(center)[#block(width: cw)[
+  #let compCont(cw: 100%*2/3, alignment: center, ..bodies) = [
+    #align(alignment)[#block(width: cw)[
       #stack(
         dir: ttb,
         spacing: 0in,
@@ -170,8 +170,9 @@
     ]]
   ]
 
-#let callout(title: "", body: "", width: 100%*2/3) = compCont(
+#let callout(title: "", body: "", width: 100%*2/3, alignment: center) = compCont(
   cw: width,
+  alignment: alignment,
   if(title != ""){[#[#title]<cct-tx>]},
   if(body != ""){[#[#body]<ccb-bgla>]},
   )
@@ -230,6 +231,7 @@
   fz: 12pt,
   rawsize: 0.9,
   imagewidth: 200%/3,
+  mathscale: 1,
   flags: (),
   debug: false,
   body,
@@ -356,7 +358,7 @@
     )
   }
   
-  block(breakable:false)[#it #place(top+right)[#q-ac[[#it.lang]]]]
+  block(breakable:true)[#it #place(top+right)[#q-ac[[#it.lang]]]]
 }
 
   show raw.where(block: true): hi => al-centre(block(
@@ -370,6 +372,7 @@
   set par(justify: true, leading: linespacing * 0.9em)
   show par: set block(spacing: 2em)
 
+  set math.equation(numbering: "(1.1.1)")
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
   } else if (font.contains("Noto Sans") or font.contains("Noto Mono")) {
@@ -378,7 +381,7 @@
     text(font: "TeX Gyre Schola Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1em)
-  show math.equation.where(block: true): me => [#set text(size: 1.5em); #align(center)[#me]]
+  show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #align(center)[#me]]
 
   show link: set text(..fill-ac)
 

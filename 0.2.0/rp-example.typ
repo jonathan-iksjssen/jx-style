@@ -18,9 +18,13 @@
   font: "TeX Gyre Schola",
 
   colsc: "sky",
-  flags: ("oldnum")
+  flags: ("oldnum"),
+
+  date: datetime(year: 2036, month: 6, day: 17).display("[day padding:none] [month repr:short]. [year repr:full]")
 )
 
 = PINGAS
 #lorem(50)
-$ frac("Je m'en bats les couilles.",2)= twinfantasy $
+$ frac("Je m'en bats les couilles.",frac(#emoji.flag,twinfantasy))= sum^twinfantasy_#emoji.abacus 2 d d d d d $
+
+#render-date(2024,9,14)
