@@ -11,7 +11,7 @@
 #let arogradient = gradient.linear(
   ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%),
   ctp-moch.green.transparentize(50%),
-  irgo("default", "bg"),
+  coll.at("default").at("bg"),
   ctp-moch.subtext1.transparentize(50%),
   ctp-moch.overlay2.transparentize(50%),
 )
@@ -232,26 +232,32 @@
 
   // // DOCUMENT SETTINGS
   colsc: "default", // COLOUR SCHEME OF THE DOCUMENT. SEE irgot.typ
-  bgtint: none, // TINT ON BACKGROUND COLOUR. SEE
-  headingstyle: "block",
-  headingnum: "1.1.1",
-  headingprefix: "",
-  headingsup: "Section",
-  size: "print",
-  font: "Iosevka SS14",
-  font2: "",
-  fw: "regular",
-  date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"),
-  refsup: "§",
-  linespacing: 1,
-  columns: 1,
-  outcols: 1,
-  fz: 12pt,
-  rawsize: 0.9,
-  imagewidth: 200%/3,
-  mathscale: 1,
-  flags: (),
+  bgtint: none, // TINT ON BACKGROUND COLOUR. SEE DECLARATION OF VARIABLE bg IN SECTION « COLOUR DEFS »
+  size: "print", // PAGE SIZE PRESET. SEE SECTION « PAGE ».
+  date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"), // DATE TO DISPLAY IN THE DOCUMENNT. DEFAULTS TO THE CURRENT DAY.
+  columns: 1, // NUMBER OF COLUMNS FOR THE DOCUMENT CONTENT.
+  outcols: 1, // NUMBER OF COLUMNS FOR THE TABLE OF CONTENTS.
+  imagewidth: 200%/3, // WIDTH OF IMAGES.
+
+  // //  HEADINGS
+  headingstyle: "block", // HEADING STYLE. ONE OF ("book", "block", "lines", "simple", "old").
+  headingnum: "1.1.1", // HEADING NUMBERING STYLE. SEE TYPST'S NUMBERING FUNCTION.
+  headingprefix: "", // TEXT TO PREPEND ALL HEADINGS WITH.
+  headingsup: "Section", // NAME FOR EACH HEADING.
+  refsup: "§", // SUPPLEMENT FOR REFERENCES. ONLY APPLIES WHEN FLAG "refsups" IS SET
+
+  // // TEXT AND FONT
+  font: "Iosevka SS14", // FONT FOR THE DOCUMENT.
+  font2: "", // SECONDARY FONT FOR HEADINGS. NOT YET IMPLEMENTED
+  fw: "regular", // FONT WEIGHT FOR THE DOCUMENT.
+  fz: 12pt, // FONT SIZE FOR THE DOCUMENT
+  rawsize: 0.9, // SIZE MULTIPLIER FOR raw() TEXT.
+  mathscale: 1, // SCALE OF MATH TEXT.
+  linespacing: 1, // SPACING BETWEEN EACH LINE.
+  
+  flags: (), // FLAGS. SEE flags-documentation.md FOR DETAILS.
   debug: false,
+
   body,
 ) = {
   // TYPE CHECKING --- TYPE CHECKING --- TYPE CHECKING --- TYPE CHECKING --- TYPE CHECKING --- TYPE CHECKING --- TYPE CHECKING ---
@@ -287,16 +293,16 @@
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
 
   let bg = if (bgtint == "pine") {
-    color.mix((irgo(colsc, "bg"), 33%), (rgb("#EFEBE9"), 67%))
+    color.mix( ( coll.at(colsc, default: "default").at("bg"), 33%), (rgb("#EFEBE9"), 67%))
   } else if (bgtint == "grey") {
-    irgo(colsc, "bg").desaturate(100%)
+    coll.at(colsc, default: "default").at("bg").desaturate(100%)
   } else {
-    irgo(colsc, "bg")
+    coll.at(colsc, default: "default").at("bg")
   } // BG; 50
-  let la = irgo(colsc, "la") // lightAccent; 200
-  let ac = irgo(colsc, "ac") // Accent; 600
-  let da = irgo(colsc, "da") // darkAccent; 800
-  let tx = irgo(colsc, "tx") // Text; 950
+  let la = coll.at(colsc, default: "default").at("la") // lightAccent; 200
+  let ac = coll.at(colsc, default: "default").at("ac") // Accent; 600
+  let da = coll.at(colsc, default: "default").at("da") // darkAccent; 800
+  let tx = coll.at(colsc, default: "default").at("tx") // Text; 950
 
   let bgla = color.mix(bg, la)
   let laac = color.mix(la, ac)
@@ -529,7 +535,7 @@
     width: if (size == "longbond") { 8.5in
     } else if (size == "longbond-l") { 13in
     } else if (size == "print-l") { 11in
-    } else if (size == "phone") { 6in
+    } else if (size == "phone") { 7in
     } else if (size == "notebook") { 5.5in
     } else if (size == "tablet") { 10in
     } else if (size == "pc") { 12in
@@ -543,7 +549,7 @@
     height: if (size == "longbond") { 13in
     } else if (size == "longbond-l") { 8.5in
     } else if (size == "print-l") { 8.5in
-    } else if (size == "phone") { 12in
+    } else if (size == "phone") { 14in
     } else if (size == "notebook") { 7.5in
     } else if (size == "tablet") { 6in
     } else if (size == "pc") { 7.5in
@@ -1164,6 +1170,8 @@
   set path(stroke: solidStroke(tx))
   set line(stroke: solidStroke(tx))
 
+  
+
   // CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS ---
 
   let customhl(back, fore, body) = [
@@ -1545,7 +1553,7 @@
   ]
 
   if (doctype == "diaryEntry") {
-    flags.push("centerfoot")
+    flags.push("centrefoot")
     diaryheader()
   }
 
