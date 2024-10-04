@@ -121,7 +121,10 @@
 #let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
 #let cock = text(font: "Noto Sans EgyptHiero", weight: 900)[𓂸];
 #let lenny = text("( ͡° ͜ʖ ͡°)");
-#show "« ": "« "; #show " »": " »"; #show "‹ ": "‹ "; #show " ›": " ›"
+#show "« ": "«" + sym.space.nobreak;
+#show " »": sym.space.nobreak + "»";
+#show "‹ ": "‹" + sym.space.nobreak;
+#show " ›": sym.space.nobreak + "›";
 
 
 
@@ -237,7 +240,7 @@
   date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"), // DATE TO DISPLAY IN THE DOCUMENNT. DEFAULTS TO THE CURRENT DAY.
   columns: 1, // NUMBER OF COLUMNS FOR THE DOCUMENT CONTENT.
   outcols: 1, // NUMBER OF COLUMNS FOR THE TABLE OF CONTENTS.
-  imagewidth: 200%/3, // WIDTH OF IMAGES.
+  imagewidth: 2/3, // WIDTH OF IMAGES.
 
   // //  HEADINGS
   headingstyle: "block", // HEADING STYLE. ONE OF ("book", "block", "lines", "simple", "old").
@@ -288,6 +291,16 @@
   }
   if (type(author) != str and type(author) != array) {
     panic("Field `author` must be a string or an array!")
+  }
+
+  if(docutype == "notes") {
+    title = subject + ": Notes"
+    headingstyle = "book"
+
+    flags.push("ampersand")
+    flags.push("separate-outline")
+    flags.push("separate-bib")
+    flags.push("hl-outlined-h1")
   }
 
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
@@ -367,7 +380,7 @@
     radius: 0.25em,
     inset: (x: 0.25em),
     outset: (y: 0.3em),
-    stroke: dottedStroke(la),
+    stroke: solidStroke(laac.transparentize(50%)),
   )[#text(size: 1em * rawsize)[#b]]
 
   show raw.where(block: true): it => {
@@ -680,7 +693,7 @@
               stroke: (y: solidStroke(th: 2pt, datx)),
               width: 100%,
               inset: (
-                y: 1em,
+                y: 0.66em,
                 left: if (flags.contains("no-h1-indent")) {
                   0em
                 } else {
@@ -689,9 +702,25 @@
               ),
               height: auto,
             )[
-              #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
-              #v(-3.25em)
-              #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
+              #grid(columns: (auto, auto), inset: (x: 0.5em),  align: (horizon+center, horizon+left),
+
+                grid.cell(inset: (right:1em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
+                #stack(
+                  dir: ttb, spacing: 0.125in * linespacing,
+                  text(size: 1em, weight: "bold")[#headingsup],
+                  text(size: 2em, weight: "bold")[#counter(heading).display()]
+                )
+              ],
+
+              grid.cell(inset:(left:1em))[
+                #text(size: 1.75em, fill: tx, weight: "extrabold")[#hy.body]
+              ]
+              
+              )
+
+              // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
+              // #v(-3.25em)
+              // #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
             ]
           ]]
       ]
@@ -1133,7 +1162,7 @@
     fill: (_, y) => if (y == 0) {
       tx
     } else if (calc.rem(y, 2) == 0) {
-      bgla
+      bgla.mix(bg)
     } else {
       bg
     },
@@ -1417,69 +1446,65 @@
 
   let authordisplay = if (type(author) == str) {
     author
-  } else {
+  } else if (type(author) == array) {
     author.join("; ")
   }
 
+  let sectiondisplay = if (flags.contains("showsection")) {
+    emph(" — " + section)
+  } else { none }
+
+  let codedisplay = if (code != "") { set text(size: fz / rawsize); code } else {none}
+
+  let dividerdisplay = if (flags.contains("nodivider")) { } else {
+      [#v(-1em)
+        #line(length: 100%, stroke: solidStroke(tx))]
+    }
+
+  let schooldocTitleDisplay = if (title != "") {
+    [#[#emph[#title]]<hl-ac>]
+  } else { none }
+
+  let subjectdisplay = if (subject != "") {
+          [#[#subject]<hl-da>]
+        }
+
+
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
 
-  let sdheader() = align(if (flags.contains("centrehead")) {
-    center
-  } else {
-    left
-  })[
-    #text[#strong[#authordisplay]#if (flags.contains("showsection")) {
-        text(weight: "regular", style: "italic")[ — #section]
-      }] #h(1fr) #if (code != "") {
-      code
-    }
-    #linebreak()
-    #box[#stack(
-        dir: ltr,
-        spacing: 0em,
-        if (subject != "") {
-          [#[#subject]<hl-da>]
-        },
-        [#[#emph[#title]]<hl-ac>],
-      )] #h(1fr) #daterepr
-    #if (flags.contains("nodivider")) { } else {
-      [#v(-1em)
-        #line(length: 100%, stroke: solidStroke(tx))]
-    }
+  let sdheader() = if(not flags.contains("centrehead")){[
+    #stack(
+      dir: ttb, spacing: linespacing * 1em,
+      {strong(authordisplay) + sectiondisplay + h(1fr) + codedisplay},
+      {box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay)) + h(1fr) + daterepr},
+      block(inset: (top: linespacing*1.5em), dividerdisplay)
+    )
+  ]} else {
+    align(center, stack(
+      dir: ttb, spacing: linespacing * 1em,
+      {strong(authordisplay) + sectiondisplay},
+      {box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay))},
+      {codedisplay + "·" + daterepr},
+      block(inset: (top: linespacing*1.5em), dividerdisplay)
+    ))
+  }
 
-  ]
-
-  let notesheader() = align(if (flags.contains("centrehead")) {
-    center
-  } else {
-    left
-  })[
-    #text[#strong[#authordisplay]#if (flags.contains("showsection")) {
-        text(weight: "regular", style: "italic")[ — #section]
-      }] #h(1fr) #if (code != "") {
-      code
-    }
-    #linebreak()
-    #box[#stack(
-        dir: ltr,
-        spacing: 0em,
-        if (subject != "") {
-          [#[#subject]<hl-da>]
-        },
-        [#[#(sym.angle.l + " Notes " + sym.angle.r)]<hl-ac>],
-      )] #h(1fr) #daterepr
-    #if (flags.contains("nodivider")) { } else {
-      [#v(-1em)
-        #line(length: 100%, stroke: solidStroke(tx))]
-    }
-
-  ]
+  let notesheader() = {
+    align(center, stack(
+      dir: ttb, spacing: linespacing * 1em,
+      {strong(authordisplay) + sectiondisplay},
+      {big(n:1,box(stack(dir: ltr, subjectdisplay, hl-ac("Notes"))))},
+      {codedisplay + "·" + daterepr},
+      block(inset: (top: linespacing*1.5em), dividerdisplay)
+    ))
+  }
 
   if (doctype == "schooldoc") {
     sdheader()
   }
   if (doctype == "notes") {
     notesheader()
+    outline()
   }
 
   // ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT ---
@@ -1563,46 +1588,53 @@
     {
 
       heading(outlined: false, numbering: none)[DEBUG MODE]
-      raw(repr(doctype))
-      [\ ]
-      raw(repr(author))
-      [\ ]
-      raw(repr(subject))
-      [\ ]
-      raw(repr(title))
-      [\ ]
-      raw(repr(subtitle))
-      [\ ]
-      raw(repr(description))
-      [\ ]
-      raw(repr(rating))
-      [\ ]
-      raw(repr(tags))
-      [\ ]
-      raw(repr(rp-keywords))
-      [\ ]
-      raw(repr(code))
-      [\ ]
-      raw(repr(colsc))
-      [\ ]
-      raw(repr(size))
-      [\ ]
-      raw(repr(font))
-      [\ ]
-      raw(repr(headingstyle))
-      [\ ]
-      raw(repr(headingnum))
-      [\ ]
-      raw(repr(fw))
-      [\ ]
-      raw(repr(date))
-      [\ ]
-      raw(repr(columns))
-      [\ ]
-      raw(repr(fz))
-      [\ ]
-      raw(repr(flags))
-      [\ ]
+      heading(outlined: false, numbering: none, level: 2)[Parameters]
+      align(center)[
+#table(columns: (auto, auto, auto), stroke: (y: dottedStroke(th: 1pt, laac)),
+"Parameter", "Value", "Type",
+`docutype`, repr(docutype), repr(type(docutype)),
+`author`, repr(author), repr(type(author)),
+`rp-title`, repr(rp-title), repr(type(rp-title)),
+`rp-authors`, repr(rp-authors), repr(type(rp-authors)),
+`rp-school`, repr(rp-school), repr(type(rp-school)),
+`rp-submittedTo`, repr(rp-submittedTo), repr(type(rp-submittedTo)),
+`rp-keywords`, repr(rp-keywords), repr(type(rp-keywords)),
+`rp-subtitle`, repr(rp-subtitle), repr(type(rp-subtitle)),
+`rp-supplement`, repr(rp-supplement), repr(type(rp-supplement)),
+`rp-supplement2`, repr(rp-supplement2), repr(type(rp-supplement2)),
+`rp-header`, repr(rp-header), repr(type(rp-header)),
+`rp-subject`, repr(rp-subject), repr(type(rp-subject)),
+`section`, repr(section), repr(type(section)),
+`subject`, repr(subject), repr(type(subject)),
+`cod`, repr(cod), repr(type(cod)),
+`rating`, repr(rating), repr(type(rating)),
+`tags`, repr(tags), repr(type(tags)),
+`title`, repr(title), repr(type(title)),
+`subtitle`, repr(subtitle), repr(type(subtitle)),
+`description`, repr(description), repr(type(description)),
+`colsc`, repr(colsc), repr(type(colsc)),
+`bgtint`, repr(bgtint), repr(type(bgtint)),
+`size`, repr(size), repr(type(size)),
+`date`, repr(date), repr(type(date)),
+`columns`, repr(columns), repr(type(columns)),
+`outcols`, repr(outcols), repr(type(outcols)),
+`imagewidth`, repr(imagewidth), repr(type(imagewidth)),
+`headingstyle`, repr(headingstyle), repr(type(headingstyle)),
+`headingnum`, repr(headingnum), repr(type(headingnum)),
+`headingprefix`, repr(headingprefix), repr(type(headingprefix)),
+`headingsup`, repr(headingsup), repr(type(headingsup)),
+`refsup`, repr(refsup), repr(type(refsup)),
+`font`, repr(font), repr(type(font)),
+`font2`, repr(font2), repr(type(font2)),
+`fw`, repr(fw), repr(type(fw)),
+`fz`, repr(fz), repr(type(fz)),
+`rawsize`, repr(rawsize), repr(type(rawsize)),
+`mathscale`, repr(mathscale), repr(type(mathscale)),
+`linespacing`, repr(linespacing), repr(type(linespacing)),
+`flags`, repr(flags), repr(type(flags)),
+`debug`, repr(debug), repr(type(debug)),
+)
+      ]
 
 
       let sqdebug(a) = [#square(width: 2in, ..a, stroke: 2pt + tx)]
