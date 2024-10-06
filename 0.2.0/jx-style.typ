@@ -8,6 +8,9 @@
 #let inlineimage(..args) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, image(..args, width: auto))
 #let inline(body) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, body)
 
+
+
+
 #let arogradient = gradient.linear(
   ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%),
   ctp-moch.green.transparentize(50%),
@@ -238,7 +241,7 @@
   bgtint: none, // TINT ON BACKGROUND COLOUR. SEE DECLARATION OF VARIABLE bg IN SECTION « COLOUR DEFS »
   size: "print", // PAGE SIZE PRESET. SEE SECTION « PAGE ».
   date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"), // DATE TO DISPLAY IN THE DOCUMENNT. DEFAULTS TO THE CURRENT DAY.
-  columns: 1, // NUMBER OF COLUMNS FOR THE DOCUMENT CONTENT.
+  doc-columns: 1, // NUMBER OF COLUMNS FOR THE DOCUMENT CONTENT.
   outcols: 1, // NUMBER OF COLUMNS FOR THE TABLE OF CONTENTS.
   imagewidth: 2/3, // WIDTH OF IMAGES.
 
@@ -446,7 +449,7 @@
   show link: set text(..fill-ac)
 
   // OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES ---
-
+  let headingPrefixDisplay = if(headingprefix == ""){none}else{headingprefix+sym.space}
   set outline(
     depth: 3,
     indent: 2em,
@@ -455,14 +458,15 @@
     } else {
       "Table of Contents"
     },
+    fill: repeat[#sym.space#sym.zwnj.#sym.space#sym.zwnj]
   )
   show outline.entry.where(level: 1): ol => if (flags.contains("hl-outlined-h1")) {
     box(outset: par.leading / 2, fill: bgla, strong(ol))
   } else {
-    strong(ol)
+    strong[#headingPrefixDisplay#ol]
   }
-  show outline.entry.where(level: 2): q-da
-  show outline.entry.where(level: 3): q-ac
+  show outline.entry.where(level: 2): ol=> q-da(headingPrefixDisplay+ol)
+  show outline.entry.where(level: 3): ol=> q-ac(headingPrefixDisplay+ol)
   show outline: a => if (doctype in ("businessPlan", "paper")) {
     show heading: he => {
       h(1fr) + hl-tx[#he.body] + h(1fr)
@@ -472,7 +476,7 @@
   } else {
     show heading: he => text(1em / 1.167)[#al-centre[#[#he.body]<cct-datx>]]
     if (flags.contains("separate-outline")) {
-      align(horizon + center, a)
+      align(horizon + center, columns(outcols)[#a])
       pagebreak(weak: true)
     } else {
       a
@@ -515,7 +519,7 @@
   )
   set list(
     tight: false,
-    marker: ([#sym.circle.filled.small], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]),
+    marker: ([#sym.circle.filled.tiny], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]),
   )
   set terms(tight: false)
 
@@ -595,11 +599,13 @@
       ]
 
     ],
-    columns: columns,
+    columns: doc-columns,
   )
 
   // #region HEADINGS
   // HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS ---
+
+  let headingPrefixDisplay = if(headingprefix == ""){none}else{headingprefix+sym.space}
 
   set heading(numbering: (..nums) => if (doctype == "businessPlan") {
     let format = ("I.", "A.", "1.", "I.", "A.", "1.").at(nums.pos().len() - 1)
@@ -607,6 +613,8 @@
   } else {
     numbering(headingnum, ..nums)
   })
+
+  set heading(supplement: headingsup)
 
   // -- HEADING 1 -- HEADING 1 -- HEADING 1 -- HEADING 1 --
   show heading.where(level: 1): hy => if (headingstyle == "block") {
@@ -623,7 +631,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: tx, align: left)[#counter(heading).display()],
+          grid.cell(fill: tx, align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell(fill: datx)[#hy.body],
         )
       ]
@@ -643,7 +651,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell(align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell()[#hy.body],
         )
       ]
@@ -702,17 +710,18 @@
               ),
               height: auto,
             )[
-              #grid(columns: (auto, auto), inset: (x: 0.5em),  align: (horizon+center, horizon+left),
+              #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon+center, horizon+left),
 
-                grid.cell(inset: (right:1em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
+                grid.cell(inset: (right:1em, left: 0.75em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
                 #stack(
                   dir: ttb, spacing: 0.125in * linespacing,
-                  text(size: 1em, weight: "bold")[#headingsup],
-                  text(size: 2em, weight: "bold")[#counter(heading).display()]
+                  text(size: 1em, weight: "bold")[#hy.supplement],
+                  text(size: 2em, weight: "bold")[#headingPrefixDisplay#counter(heading).display()]
                 )
               ],
 
               grid.cell(inset:(left:1em))[
+                #set par(justify: false)
                 #text(size: 1.75em, fill: tx, weight: "extrabold")[#hy.body]
               ]
               
@@ -751,7 +760,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: acda, align: left)[#counter(heading).display()],
+          grid.cell(fill: acda, align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell(fill: ac)[#hy.body],
         )
       ]
@@ -771,7 +780,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell(align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell()[#hy.body],
         )
       ]
@@ -822,7 +831,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: color.mix(laac, la), align: left)[#counter(heading).display()],
+          grid.cell(fill: color.mix(laac, la), align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell(fill: la)[#hy.body],
         )
       ]
@@ -841,7 +850,7 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(align: left)[#counter(heading).display()],
+          grid.cell(align: left)[#headingPrefixDisplay#counter(heading).display()],
           grid.cell()[#hy.body],
         )
       ]
@@ -896,7 +905,7 @@
             inset: (x: 0.5em),
             outset: (y: 0.25em),
             fill: datx,
-          )[#[#[#counter(heading).display()]]],
+          )[#[#[#headingPrefixDisplay#counter(heading).display()]]],
           box(inset: (x: 0.5em), outset: (y: 0.25em), fill: da)[#[#[#hy.body]]],
         )
       ]
@@ -911,7 +920,7 @@
       #box(
         inset: (y: 0.33em),
         stroke: (bottom: solidStroke(tx)),
-      )[#counter(heading).display() #h(0.5em) #hy.body]
+      )[#headingPrefixDisplay#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
   } else if (headingstyle == "old") {
@@ -963,7 +972,7 @@
             inset: (x: 0.5em),
             outset: (y: 0.25em),
             fill: acda,
-          )[#[#[#counter(heading).display()]]],
+          )[#[#[#headingPrefixDisplay#counter(heading).display()]]],
           box(inset: (x: 0.5em), outset: (y: 0.25em), fill: ac)[#[#[#hy.body]]],
         )
       ]
@@ -978,7 +987,7 @@
       #box(
         inset: (y: 0.33em),
         stroke: (bottom: solidStroke(da)),
-      )[#counter(heading).display() #h(0.5em) #hy.body]
+      )[#headingPrefixDisplay#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
   } else if (headingstyle == "old") {
@@ -1029,7 +1038,7 @@
             inset: (x: 0.5em),
             outset: (y: 0.25em),
             fill: color.mix(laac, la),
-          )[#[#[#counter(heading).display()]]],
+          )[#[#[#headingPrefixDisplay#counter(heading).display()]]],
           box(inset: (x: 0.5em), outset: (y: 0.25em), fill: la)[#[#[#hy.body]]],
         )
       ]
@@ -1044,7 +1053,7 @@
       #box(
         inset: (y: 0.33em),
         stroke: (bottom: solidStroke(acda)),
-      )[#counter(heading).display() #h(0.5em) #hy.body]
+      )[#headingPrefixDisplay#counter(heading).display() #h(0.5em) #hy.body]
 
     ]
   } else if (headingstyle == "old") {
@@ -1116,7 +1125,59 @@
     if (flags.contains("separate-bib")) {
       pagebreak(weak: true)
     }
-    show heading: h => text(1em / 1.167)[#al-centre[#[#h.body]<cct-datx>]]
+    show heading: h => if(headingstyle != "book"){text(1em / 1.167)[#al-centre[#[#h.body]<cct-datx>]]} else {
+    [
+      #pagebreak(weak: true)
+      #set block(breakable: false)
+      #block(
+        width: 100%,
+        height: auto,
+        inset: (top: 0em),
+      )[
+        #set par(leading: 0.5em)
+        #align(top)[
+          #block(
+            stroke: (y: solidStroke(th: 2pt, ac)),
+            width: 100%,
+            inset: (y: 4pt),
+            height: auto,
+          )[#block(
+              stroke: (y: solidStroke(th: 2pt, datx)),
+              width: 100%,
+              inset: (
+                y: 0.66em,
+                left: if (flags.contains("no-h1-indent")) {
+                  0em
+                } else {
+                  0.25em
+                },
+              ),
+              height: auto,
+            )[
+              #grid(columns: (auto, auto), inset: (x: 0.5em),  align: (horizon+center, horizon+left),
+
+                grid.cell(inset: (right:1em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
+                #stack(
+                  dir: ttb, spacing: 0.125in * linespacing,
+                  text(size: 2em, weight: "bold")[#sym.section]
+                )
+              ],
+
+              grid.cell(inset:(left:1em))[
+                #set par(justify: false)
+                #text(size: 1.75em, fill: tx, weight: "extrabold")[#h.body]
+              ]
+              
+              )
+
+              // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
+              // #v(-3.25em)
+              // #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
+            ]
+          ]]
+      ]
+    ]
+  }
     a
   }
   let amper = if (flags.contains("ampersand")) {
@@ -1150,7 +1211,7 @@
 
   set image(fit: "contain", width: 100%)
 
-  show <img>: h => align(center)[#rect(stroke: dottedStroke(th: 2pt, ac), inset: 0in, outset: 0in, fill: none, width: (imagewidth))[#h]]
+  show <img>: h => align(center)[#rect(stroke: dottedStroke(th: 2pt, ac), inset: 0in, outset: 0in, fill: none, width: (imagewidth * 100%))[#h]]
 
   // TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES ---
 
@@ -1523,7 +1584,10 @@
     }
     #if (verbose == true) {
       [
-        *Tags:* #(..tags).join(", ")
+        *Tags:* #for i in tags{
+          set underline(stroke: (dash: "dashed"))
+          underline(i) + ","
+        }
       ]
     }
     #if (flags.contains("nodivider")) { } else {
@@ -1551,7 +1615,10 @@
     #if (verbose == true) {
       [
         *Rating:* #rating #linebreak()
-        *Tags:* #(..tags).join(", ")
+        *Tags:* #for i in tags{
+          set underline(stroke: (dash: "dashed"))
+          underline(i) + ", "
+        }
       ]
     }
     #if (not flags.contains("nodivider")) { } else {
@@ -1616,7 +1683,7 @@
 `bgtint`, repr(bgtint), repr(type(bgtint)),
 `size`, repr(size), repr(type(size)),
 `date`, repr(date), repr(type(date)),
-`columns`, repr(columns), repr(type(columns)),
+`doc-columns`, repr(doc-columns), repr(type(doc-columns)),
 `outcols`, repr(outcols), repr(type(outcols)),
 `imagewidth`, repr(imagewidth), repr(type(imagewidth)),
 `headingstyle`, repr(headingstyle), repr(type(headingstyle)),
