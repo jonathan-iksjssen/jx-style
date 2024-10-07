@@ -213,7 +213,7 @@
 
       // // ALL FIELDS BEGINNING WITH rp- ARE ONLY USED IN PAPERS (i.e. docutypes "paper" and "businessPlan")
       rp-title: "", // PAPER TITLE.
-      rp-authors: (), // PAPER AUTHORS. IS AN ARRAY IN THE FORMAT OF ( (lastname: string), (firstname: string) )
+      rp-authors: (), // PAPER AUTHORS. IS AN ARRAY.
       rp-school: "", // PAPER SCHOOL.
       rp-submittedTo: "", // PAPER SUBMITTED TO THIS PERSON.
       rp-keywords: (), // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
@@ -260,7 +260,7 @@
   rawsize: 0.9, // SIZE MULTIPLIER FOR raw() TEXT.
   mathscale: 1, // SCALE OF MATH TEXT.
   linespacing: 1, // SPACING BETWEEN EACH LINE.
-  
+
   flags: (), // FLAGS. SEE flags-documentation.md FOR DETAILS.
   debug: false,
 
@@ -296,7 +296,7 @@
     panic("Field `author` must be a string or an array!")
   }
 
-  if(docutype == "notes") {
+  if (docutype == "notes") {
     title = subject + ": Notes"
     headingstyle = "book"
 
@@ -309,7 +309,7 @@
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
 
   let bg = if (bgtint == "pine") {
-    color.mix( ( coll.at(colsc, default: "default").at("bg"), 33%), (rgb("#EFEBE9"), 67%))
+    color.mix((coll.at(colsc, default: "default").at("bg"), 33%), (rgb("#EFEBE9"), 67%))
   } else if (bgtint == "grey") {
     coll.at(colsc, default: "default").at("bg").desaturate(100%)
   } else {
@@ -449,7 +449,11 @@
   show link: set text(..fill-ac)
 
   // OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES ---
-  let headingPrefixDisplay = if(headingprefix == ""){none}else{headingprefix+sym.space}
+  let headingPrefixDisplay = if (headingprefix == "") {
+    none
+  } else {
+    headingprefix + sym.space
+  }
   set outline(
     depth: 3,
     indent: 2em,
@@ -458,15 +462,19 @@
     } else {
       "Table of Contents"
     },
-    fill: repeat[#sym.space#sym.zwnj.#sym.space#sym.zwnj]
+    fill: if (flags.contains("narrow-outline-fills")) {
+      repeat[.#sym.space#sym.zwnj]
+    } else {
+      repeat[#sym.space#sym.zwnj.#sym.space#sym.zwnj]
+    },
   )
   show outline.entry.where(level: 1): ol => if (flags.contains("hl-outlined-h1")) {
     box(outset: par.leading / 2, fill: bgla, strong(ol))
   } else {
     strong[#headingPrefixDisplay#ol]
   }
-  show outline.entry.where(level: 2): ol=> q-da(headingPrefixDisplay+ol)
-  show outline.entry.where(level: 3): ol=> q-ac(headingPrefixDisplay+ol)
+  show outline.entry.where(level: 2): ol => q-da(headingPrefixDisplay + ol)
+  show outline.entry.where(level: 3): ol => q-ac(headingPrefixDisplay + ol)
   show outline: a => if (doctype in ("businessPlan", "paper")) {
     show heading: he => {
       h(1fr) + hl-tx[#he.body] + h(1fr)
@@ -605,7 +613,11 @@
   // #region HEADINGS
   // HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS ---
 
-  let headingPrefixDisplay = if(headingprefix == ""){none}else{headingprefix+sym.space}
+  let headingPrefixDisplay = if (headingprefix == "") {
+    none
+  } else {
+    headingprefix + sym.space
+  }
 
   set heading(numbering: (..nums) => if (doctype == "businessPlan") {
     let format = ("I.", "A.", "1.", "I.", "A.", "1.").at(nums.pos().len() - 1)
@@ -710,21 +722,22 @@
               ),
               height: auto,
             )[
-              #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon+center, horizon+left),
+              #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon + center, horizon + left),
 
-                grid.cell(inset: (right:1em, left: 0.75em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
-                #stack(
-                  dir: ttb, spacing: 0.125in * linespacing,
-                  text(size: 1em, weight: "bold")[#hy.supplement],
-                  text(size: 2em, weight: "bold")[#headingPrefixDisplay#counter(heading).display()]
-                )
-              ],
+                grid.cell(inset: (right: 1em, left: 0.75em), stroke: (right: dottedStroke(th: 2pt, ac)))[
+                  #stack(
+                    dir: ttb,
+                    spacing: 0.125in * linespacing,
+                    text(size: 1em, weight: "bold")[#hy.supplement],
+                    text(size: 2em, weight: "bold")[#headingPrefixDisplay#counter(heading).display()],
+                  )
+                ],
 
-              grid.cell(inset:(left:1em))[
-                #set par(justify: false)
-                #text(size: 1.75em, fill: tx, weight: "extrabold")[#hy.body]
-              ]
-              
+                grid.cell(inset: (left: 1em))[
+                  #set par(justify: false)
+                  #text(size: 1.75em, fill: tx, weight: "extrabold")[#hy.body]
+                ]
+
               )
 
               // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
@@ -1125,59 +1138,62 @@
     if (flags.contains("separate-bib")) {
       pagebreak(weak: true)
     }
-    show heading: h => if(headingstyle != "book"){text(1em / 1.167)[#al-centre[#[#h.body]<cct-datx>]]} else {
-    [
-      #pagebreak(weak: true)
-      #set block(breakable: false)
-      #block(
-        width: 100%,
-        height: auto,
-        inset: (top: 0em),
-      )[
-        #set par(leading: 0.5em)
-        #align(top)[
-          #block(
-            stroke: (y: solidStroke(th: 2pt, ac)),
-            width: 100%,
-            inset: (y: 4pt),
-            height: auto,
-          )[#block(
-              stroke: (y: solidStroke(th: 2pt, datx)),
+    show heading: h => if (headingstyle != "book") {
+      text(1em / 1.167)[#al-centre[#[#h.body]<cct-datx>]]
+    } else {
+      [
+        #pagebreak(weak: true)
+        #set block(breakable: false)
+        #block(
+          width: 100%,
+          height: auto,
+          inset: (top: 0em),
+        )[
+          #set par(leading: 0.5em)
+          #align(top)[
+            #block(
+              stroke: (y: solidStroke(th: 2pt, ac)),
               width: 100%,
-              inset: (
-                y: 0.66em,
-                left: if (flags.contains("no-h1-indent")) {
-                  0em
-                } else {
-                  0.25em
-                },
-              ),
+              inset: (y: 4pt),
               height: auto,
-            )[
-              #grid(columns: (auto, auto), inset: (x: 0.5em),  align: (horizon+center, horizon+left),
+            )[#block(
+                stroke: (y: solidStroke(th: 2pt, datx)),
+                width: 100%,
+                inset: (
+                  y: 0.66em,
+                  left: if (flags.contains("no-h1-indent")) {
+                    0em
+                  } else {
+                    0.25em
+                  },
+                ),
+                height: auto,
+              )[
+                #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon + center, horizon + left),
 
-                grid.cell(inset: (right:1em), stroke: (right: dottedStroke(th: 2pt, ac)),)[
-                #stack(
-                  dir: ttb, spacing: 0.125in * linespacing,
-                  text(size: 2em, weight: "bold")[#sym.section]
+                  grid.cell(inset: (right: 1em), stroke: (right: dottedStroke(th: 2pt, ac)))[
+                    #stack(
+                      dir: ttb,
+                      spacing: 0.125in * linespacing,
+                      text(size: 2em, weight: "bold")[#sym.section],
+                    )
+                  ],
+
+                  grid.cell(inset: (left: 1em))[
+                    #set par(justify: false)
+                    #text(size: 1.75em, fill: tx, weight: "extrabold")[#h.body]
+                  ]
+
                 )
-              ],
 
-              grid.cell(inset:(left:1em))[
-                #set par(justify: false)
-                #text(size: 1.75em, fill: tx, weight: "extrabold")[#h.body]
+                // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
+                // #v(-3.25em)
+                // #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
               ]
-              
-              )
-
-              // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
-              // #v(-3.25em)
-              // #text(size: 1.25em, fill: ac, weight: "regular", style: "italic")[#hy.body]
-            ]
-          ]]
+            ]]
+        ]
       ]
-    ]
-  }
+    }
     a
   }
   let amper = if (flags.contains("ampersand")) {
@@ -1260,7 +1276,7 @@
   set path(stroke: solidStroke(tx))
   set line(stroke: solidStroke(tx))
 
-  
+
 
   // CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS --- CUSTOM HIGHLIGHTS ---
 
@@ -1479,9 +1495,13 @@
         _Submitted by:_ #linebreak()
         #if (rp-authors != "") {
           [
-            #for aut in rp-authors [
-              #strong[#aut.lastname], #[#aut.firstname] \
-            ]
+            #for aut in rp-authors {
+              let h = aut.split(", ")
+              strong(h.at(0))
+              ", "
+              h.at(1)
+              linebreak()
+            }
           ]
         }
         #linebreak()
@@ -1513,51 +1533,87 @@
 
   let sectiondisplay = if (flags.contains("showsection")) {
     emph(" — " + section)
-  } else { none }
+  } else {
+    none
+  }
 
-  let codedisplay = if (code != "") { set text(size: fz / rawsize); code } else {none}
+  let codedisplay = if (code != "") {
+    set text(size: fz / rawsize)
+    code
+  } else {
+    none
+  }
 
   let dividerdisplay = if (flags.contains("nodivider")) { } else {
-      [#v(-1em)
-        #line(length: 100%, stroke: solidStroke(tx))]
-    }
+    [#v(-1em)
+      #line(length: 100%, stroke: solidStroke(tx))]
+  }
 
   let schooldocTitleDisplay = if (title != "") {
     [#[#emph[#title]]<hl-ac>]
-  } else { none }
+  } else {
+    none
+  }
 
   let subjectdisplay = if (subject != "") {
-          [#[#subject]<hl-da>]
-        }
+    [#[#subject]<hl-da>]
+  }
 
 
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
 
-  let sdheader() = if(not flags.contains("centrehead")){[
-    #stack(
-      dir: ttb, spacing: linespacing * 1em,
-      {strong(authordisplay) + sectiondisplay + h(1fr) + codedisplay},
-      {box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay)) + h(1fr) + daterepr},
-      block(inset: (top: linespacing*1.5em), dividerdisplay)
+  let sdheader() = if (not flags.contains("centrehead")) {
+    [
+      #stack(
+        dir: ttb,
+        spacing: linespacing * 1em,
+        {
+          strong(authordisplay) + sectiondisplay + h(1fr) + codedisplay
+        },
+        {
+          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay)) + h(1fr) + daterepr
+        },
+        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+      )
+    ]
+  } else {
+    align(
+      center,
+      stack(
+        dir: ttb,
+        spacing: linespacing * 1em,
+        {
+          strong(authordisplay) + sectiondisplay
+        },
+        {
+          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay))
+        },
+        {
+          codedisplay + "·" + daterepr
+        },
+        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+      ),
     )
-  ]} else {
-    align(center, stack(
-      dir: ttb, spacing: linespacing * 1em,
-      {strong(authordisplay) + sectiondisplay},
-      {box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay))},
-      {codedisplay + "·" + daterepr},
-      block(inset: (top: linespacing*1.5em), dividerdisplay)
-    ))
   }
 
   let notesheader() = {
-    align(center, stack(
-      dir: ttb, spacing: linespacing * 1em,
-      {strong(authordisplay) + sectiondisplay},
-      {big(n:1,box(stack(dir: ltr, subjectdisplay, hl-ac("Notes"))))},
-      {codedisplay + "·" + daterepr},
-      block(inset: (top: linespacing*1.5em), dividerdisplay)
-    ))
+    align(
+      center,
+      stack(
+        dir: ttb,
+        spacing: linespacing * 1em,
+        {
+          strong(authordisplay) + sectiondisplay
+        },
+        {
+          big(n: 1, box(stack(dir: ltr, subjectdisplay, hl-ac("Notes"))))
+        },
+        {
+          codedisplay + "·" + daterepr
+        },
+        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+      ),
+    )
   }
 
   if (doctype == "schooldoc") {
@@ -1657,50 +1713,52 @@
       heading(outlined: false, numbering: none)[DEBUG MODE]
       heading(outlined: false, numbering: none, level: 2)[Parameters]
       align(center)[
-#table(columns: (auto, auto, auto), stroke: (y: dottedStroke(th: 1pt, laac)),
-"Parameter", "Value", "Type",
-`docutype`, repr(docutype), repr(type(docutype)),
-`author`, repr(author), repr(type(author)),
-`rp-title`, repr(rp-title), repr(type(rp-title)),
-`rp-authors`, repr(rp-authors), repr(type(rp-authors)),
-`rp-school`, repr(rp-school), repr(type(rp-school)),
-`rp-submittedTo`, repr(rp-submittedTo), repr(type(rp-submittedTo)),
-`rp-keywords`, repr(rp-keywords), repr(type(rp-keywords)),
-`rp-subtitle`, repr(rp-subtitle), repr(type(rp-subtitle)),
-`rp-supplement`, repr(rp-supplement), repr(type(rp-supplement)),
-`rp-supplement2`, repr(rp-supplement2), repr(type(rp-supplement2)),
-`rp-header`, repr(rp-header), repr(type(rp-header)),
-`rp-subject`, repr(rp-subject), repr(type(rp-subject)),
-`section`, repr(section), repr(type(section)),
-`subject`, repr(subject), repr(type(subject)),
-`cod`, repr(cod), repr(type(cod)),
-`rating`, repr(rating), repr(type(rating)),
-`tags`, repr(tags), repr(type(tags)),
-`title`, repr(title), repr(type(title)),
-`subtitle`, repr(subtitle), repr(type(subtitle)),
-`description`, repr(description), repr(type(description)),
-`colsc`, repr(colsc), repr(type(colsc)),
-`bgtint`, repr(bgtint), repr(type(bgtint)),
-`size`, repr(size), repr(type(size)),
-`date`, repr(date), repr(type(date)),
-`doc-columns`, repr(doc-columns), repr(type(doc-columns)),
-`outcols`, repr(outcols), repr(type(outcols)),
-`imagewidth`, repr(imagewidth), repr(type(imagewidth)),
-`headingstyle`, repr(headingstyle), repr(type(headingstyle)),
-`headingnum`, repr(headingnum), repr(type(headingnum)),
-`headingprefix`, repr(headingprefix), repr(type(headingprefix)),
-`headingsup`, repr(headingsup), repr(type(headingsup)),
-`refsup`, repr(refsup), repr(type(refsup)),
-`font`, repr(font), repr(type(font)),
-`font2`, repr(font2), repr(type(font2)),
-`fw`, repr(fw), repr(type(fw)),
-`fz`, repr(fz), repr(type(fz)),
-`rawsize`, repr(rawsize), repr(type(rawsize)),
-`mathscale`, repr(mathscale), repr(type(mathscale)),
-`linespacing`, repr(linespacing), repr(type(linespacing)),
-`flags`, repr(flags), repr(type(flags)),
-`debug`, repr(debug), repr(type(debug)),
-)
+        #table(
+          columns: (auto, auto, auto),
+          stroke: (y: dottedStroke(th: 1pt, laac)),
+          "Parameter", "Value", "Type",
+          `docutype`, repr(docutype), repr(type(docutype)),
+          `author`, repr(author), repr(type(author)),
+          `rp-title`, repr(rp-title), repr(type(rp-title)),
+          `rp-authors`, repr(rp-authors), repr(type(rp-authors)),
+          `rp-school`, repr(rp-school), repr(type(rp-school)),
+          `rp-submittedTo`, repr(rp-submittedTo), repr(type(rp-submittedTo)),
+          `rp-keywords`, repr(rp-keywords), repr(type(rp-keywords)),
+          `rp-subtitle`, repr(rp-subtitle), repr(type(rp-subtitle)),
+          `rp-supplement`, repr(rp-supplement), repr(type(rp-supplement)),
+          `rp-supplement2`, repr(rp-supplement2), repr(type(rp-supplement2)),
+          `rp-header`, repr(rp-header), repr(type(rp-header)),
+          `rp-subject`, repr(rp-subject), repr(type(rp-subject)),
+          `section`, repr(section), repr(type(section)),
+          `subject`, repr(subject), repr(type(subject)),
+          `cod`, repr(cod), repr(type(cod)),
+          `rating`, repr(rating), repr(type(rating)),
+          `tags`, repr(tags), repr(type(tags)),
+          `title`, repr(title), repr(type(title)),
+          `subtitle`, repr(subtitle), repr(type(subtitle)),
+          `description`, repr(description), repr(type(description)),
+          `colsc`, repr(colsc), repr(type(colsc)),
+          `bgtint`, repr(bgtint), repr(type(bgtint)),
+          `size`, repr(size), repr(type(size)),
+          `date`, repr(date), repr(type(date)),
+          `doc-columns`, repr(doc-columns), repr(type(doc-columns)),
+          `outcols`, repr(outcols), repr(type(outcols)),
+          `imagewidth`, repr(imagewidth), repr(type(imagewidth)),
+          `headingstyle`, repr(headingstyle), repr(type(headingstyle)),
+          `headingnum`, repr(headingnum), repr(type(headingnum)),
+          `headingprefix`, repr(headingprefix), repr(type(headingprefix)),
+          `headingsup`, repr(headingsup), repr(type(headingsup)),
+          `refsup`, repr(refsup), repr(type(refsup)),
+          `font`, repr(font), repr(type(font)),
+          `font2`, repr(font2), repr(type(font2)),
+          `fw`, repr(fw), repr(type(fw)),
+          `fz`, repr(fz), repr(type(fz)),
+          `rawsize`, repr(rawsize), repr(type(rawsize)),
+          `mathscale`, repr(mathscale), repr(type(mathscale)),
+          `linespacing`, repr(linespacing), repr(type(linespacing)),
+          `flags`, repr(flags), repr(type(flags)),
+          `debug`, repr(debug), repr(type(debug)),
+        )
       ]
 
 
