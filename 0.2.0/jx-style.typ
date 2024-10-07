@@ -3,22 +3,7 @@
 #import "jx-date.typ": *
 
 #let irgo(cs, val) = coll.at(cs, default: "default").at(val)
-#let rp-author(ln, fn) = (lastname: str(ln), firstname: str(fn))
 #let img(body) = [#[#body]<img>]
-#let inlineimage(..args) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, image(..args, width: auto))
-#let inline(body) = box(inset: 0em, outset: 0em, height: 1.0em * 0.87, baseline: 10%, body)
-
-
-
-
-#let arogradient = gradient.linear(
-  ctp-frap.green.rotate(20deg).saturate(10%).transparentize(50%),
-  ctp-moch.green.transparentize(50%),
-  coll.at("default").at("bg"),
-  ctp-moch.subtext1.transparentize(50%),
-  ctp-moch.overlay2.transparentize(50%),
-)
-#let arom(body) = highlight(fill: arogradient, body)
 
 #let q-bg(body) = [#[#body]<t-bg>]
 #let q-bgla(body) = [#[#body]<t-bgla>]
@@ -50,70 +35,21 @@
 #let qhl-datx(body) = [#[#body]<qhl-datx>]
 #let qhl-tx(body) = [#[#body]<qhl-tx>]
 
-#let c-bg(cs, body) = [
-  #set text(fill: irgo(cs, bg));
-  #body
-]
-
-#let c-bgla(cs, body) = [
-  #set text(
-    fill: color.mix(
-      irgo(cs, bg),
-      irgo(cs, la),
-    ),
+#let colsel(colsc: "default", value: "ac", body) = {
+  let colselections = (
+    bg: irgo(colsc, bg),
+    bgla: irgo(colsc, bg).mix(irgo(colsc, la)),
+    la: irgo(colsc, la),
+    laac: irgo(colsc, la).mix(irgo(colsc, ac)),
+    ac: irgo(colsc, ac),
+    acda: irgo(colsc, ac).mix(irgo(colsc, da)),
+    da: irgo(colsc, da),
+    datx: irgo(colsc, da).mix(irgo(colsc, tx)),
+    tx: irgo(colsc, tx),
   )
-  #body
-]
-
-#let c-la(cs, body) = [
-  #set text(fill: irgo(cs, la));
-  #body
-]
-
-#let c-laac(cs, body) = [
-  #set text(
-    fill: color.mix(
-      irgo(cs, la),
-      irgo(cs, ac),
-    ),
-  )
-  #body
-]
-
-#let c-ac(cs, body) = [
-  #set text(fill: irgo(cs, ac));
-  #body
-]
-
-#let c-acda(cs, body) = [
-  #set text(
-    fill: color.mix(
-      irgo(cs, ac),
-      irgo(cs, da),
-    ),
-  )
-  #body
-]
-
-#let c-da(cs, body) = [
-  #set text(fill: irgo(cs, tx));
-  #body
-]
-
-#let c-datx(cs, body) = [
-  #set text(
-    fill: color.mix(
-      irgo(cs, ac),
-      irgo(cs, da),
-    ),
-  )
-  #body
-]
-
-#let c-tx(cs, body) = [
-  #set text(fill: irgo(cs, tx));
-  #body
-]
+  set text(fill: colselections.at(value))
+  body
+}
 
 #let triangle = polygon.regular.with(vertices: 3)
 #let pentagon = polygon.regular.with(vertices: 5)
@@ -180,31 +116,26 @@
   ]
 ]
 
-#let compCont(cw: 100% * 2 / 3, alignment: center, ..bodies) = [
-  #align(alignment)[#block(width: cw)[
+
+#let callout(
+  title: "",
+  body: "",
+  width: 2 / 3,
+  alignment: center,
+) = [
+  #align(alignment)[#block(width: width)[
       #stack(
         dir: ttb,
         spacing: 0in,
-        ..bodies,
+        if (title != "") {
+          [#[#title]<cct-tx>]
+        },
+        if (body != "") {
+          [#[#body]<ccb-bgla>]
+        },
       )
     ]]
 ]
-
-#let callout(title: "", body: "", width: 100% * 2 / 3, alignment: center) = compCont(
-  cw: width,
-  alignment: alignment,
-  if (title != "") {
-    [#[#title]<cct-tx>]
-  },
-  if (body != "") {
-    [#[#body]<ccb-bgla>]
-  },
-)
-
-#let unhead(cw: 100% * 2 / 3, body) = compCont(
-  cw: cw,
-  [#[#body]<cct-tx>],
-)
 
 #let docu(
 
