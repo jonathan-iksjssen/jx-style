@@ -120,7 +120,7 @@
 #let callout(
   title: "",
   body: "",
-  width: 2 / 3,
+  width: 200%/3,
   alignment: center,
 ) = [
   #align(alignment)[#block(width: width)[
@@ -421,6 +421,8 @@
       a
     }
   }
+
+  
 
 
   // BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES --- BLOCKQUOTES ---
@@ -1029,6 +1031,10 @@
     [#hy]
   }
   show heading: set block(spacing: 1em)
+
+  show heading.where(level: 1): hy => if(font2 != ""){
+    set text(font: font2); hy;
+  } else {hy}
 
   // #endregion
 
