@@ -33,6 +33,8 @@
 		"bg": rgb("#F0FDFA"),	"tx": rgb("#083344"),	"ac": rgb("#0891B2"),	"la": rgb("#A5F3FC"),	"da": rgb("#155E75") ),
 	"sky": (
 		"bg": rgb("#F0F9FF"),	"tx": rgb("#082F49"),	"ac": rgb("#0284C7"),	"la": rgb("#BAE6FD"),	"da": rgb("#075985") ),
+	"azure": (
+		"bg": rgb("#F0F8FF"),	"tx": rgb("#102A4F"),	"ac": rgb("#1474D9"),	"la": rgb("#BDE1FE"),	"da": rgb("#134D9A") ),
 	"blue": (
 		"bg": rgb("#EFF6FF"),	"tx": rgb("#172554"),	"ac": rgb("#2563EB"),	"la": rgb("#BFDBFE"),	"da": rgb("#1E40AF") ),
 	"midblue": (

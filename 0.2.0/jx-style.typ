@@ -2,6 +2,8 @@
 #import "catppuccin.typ": *
 #import "jx-date.typ": *
 #let irgo(cs, val) = coll.at(cs, default: "default").at(val)
+
+#let shl(body) = strong[#[#body]<t-ac>]
 #let img(body) = [#[#body]<img>]
 #let q-bg(body) = [#[#body]<t-bg>]
 #let q-bgla(body) = [#[#body]<t-bgla>]
@@ -53,11 +55,15 @@
 #let freaky = "𝓯𝓻𝓮𝓪𝓴𝔂";
 #let cock = text(font: "Noto Sans EgyptHiero", weight: 900)[𓂸];
 #let lenny = text("( ͡° ͜ʖ ͡°)");
+#let amogus = "ඞ";
+#let ex = text([*Examples:*])
+#let ns = text([*Number Sentence:*])
+#let th = super("th")
 #show "« ": "«" + sym.space.nobreak;
 #show " »": sym.space.nobreak + "»";
 #show "‹ ": "‹" + sym.space.nobreak;
 #show " ›": sym.space.nobreak + "›";
-#let signature(n: 1) = text(font: "JX-Symbols", size: 5em * n)[J]
+#let signature(n) = {set text(font: "JX-Symbols", size: 5em * n); box[J]}
 #let big(n: 2, body) = [ #text(size: 1em * calc.pow(1.2, n))[#body] ]
 #let sml(n: 2, body) = [ #text(size: 1em / calc.pow(1.2, n))[#body] ]
 #let al-left(body) = [ #align(left)[#body] ]
@@ -163,7 +169,9 @@
   rawsize: 0.9, // SIZE MULTIPLIER FOR raw() TEXT.
   mathscale: 1, // SCALE OF MATH TEXT.
   linespacing: 1, // SPACING BETWEEN EACH LINE.
+  parspacing: 1, // SPACING BETWEEN EACH PARAGRAPH.
   flags: (), // FLAGS. SEE flags-documentation.md FOR DETAILS.
+  table-settings: (), // TABLE SETTINGS.
   debug: false,
   body,
 ) = {
@@ -249,9 +257,36 @@
     },
     features: if (font.contains("Inter")) {
       ("case", "tnum", "zero", "cv01", "cv02", "cv05", "cv08", "cv12", "cv13", "cpsp")
-    } else if (font.contains("Andika")) {
-      ("ss01",)
-    } else {
+    } else if (font.contains("Andika")) {(
+      "ss01": 1,
+      "cv04": 1,
+      "cv10": 1,
+      "cv31": 1,
+      "cv35": 1,
+      "cv39": 1,
+      "cv43": 2,
+      "cv51": 1,
+      "cv52": 1,
+      "cv67": 1,
+      )
+    } else if (font == "Iosevka") {(
+      "ss14": 1,
+      "cv03": 3,
+      "cv04": 5,
+      "cv06": 1,
+      "cv09": 1, 
+      "cv10": 4,
+      "cv14": 4,
+      "cv19": 2,
+      "cv20": 2,
+      "cv21": 11,
+      "cv23": 4,
+      "cv26": 4,
+      "cv27": 9,
+      "cv41": 18,
+      "cv44": 8,
+      "cv45": 2,
+    )} else {
       ()
     },
     tracking: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {
@@ -260,7 +295,7 @@
       0pt
     },
     spacing: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {
-      300% / 5
+      400% / 5
     } else {
       100%
     },
@@ -315,18 +350,15 @@
       hi,
     ),
   )
-  set par(justify: true, leading: linespacing * 0.9em)
-  show par: set block(spacing: 2em)
-  set math.equation(numbering: "(1.1.1)")
+  set par(justify: true, leading: linespacing * 0.9em, spacing: 1em * 2 *  parspacing)
+  
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
-  } else if (font.contains("Noto Sans") or font.contains("Noto Mono")) {
-    text(font: "Noto Sans Math")[#m]
-  } else {
+  } else {  
     text(font: "TeX Gyre Schola Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1em)
-  show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #align(center)[#me]]
+  show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #set block(breakable:true); #align(center)[#me]]
   show link: set text(..fill-ac)
   // OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES ---
   let headingPrefixDisplay = if (headingprefix == "") {
@@ -355,12 +387,17 @@
   }
   show outline.entry.where(level: 2): ol => q-da(headingPrefixDisplay + ol)
   show outline.entry.where(level: 3): ol => q-ac(headingPrefixDisplay + ol)
+
+  show outline.entry: a => {
+    a
+  }
+
   show outline: a => if (doctype in ("businessPlan", "paper")) {
     show heading: he => {
       h(1fr) + hl-tx[#he.body] + h(1fr)
       v(-0.5em)
     }
-    [#page(columns: outcols)[ #align(horizon + center)[#block(width: 200% / 3, a)]~] ]
+    [#page(columns: outcols)[ #align(horizon + center)[#block(width: 100%, a)]~] ]
   } else {
     show heading: he => text(1em / 1.167)[#al-centre[#[#he.body]<cct-datx>]]
     if (flags.contains("separate-outline")) {
@@ -405,7 +442,7 @@
     marker: ([#sym.circle.filled.tiny], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]),
   )
   set terms(tight: false)
-  show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #emph(k.description)]
+  show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #sym.arrow.r.double.long #k.description]
   // PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE ---
   set document(
     title: if (title == "") { } else {
@@ -423,7 +460,7 @@
       (..author,).join("; ")
     },
     date: datetime.today(),
-    keywords: rp-keywords,
+    keywords: (title, subtitle, ..rp-keywords),
   )
   set page(
     fill: bg,
@@ -440,7 +477,7 @@
     } else if (size == "book-a") { 5.75in
     } else if (size == "book-b") { 7.5in
     } else if (size == "square") { 8in
-    } else if (size == "auto") { 6in
+    } else if (size == "auto") { 7in
     } else { 8.5in },
     height: if (size == "longbond") { 13in
     } else if (size == "longbond-l") { 8.5in
@@ -462,24 +499,36 @@
       bottom: if (flags.contains("nofoot")) { 0.75in } else { 1in },
       top: if (rp-header == []) { 0.75in } else { 1in },
     ),
+    
     header: [
-    #if(rp-header != []){[ #rp-header #h(1fr) #rp-subject #v(-1em)]};
-    #line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))
+    #if(rp-header != []){[ #rp-header #h(1fr) #rp-subject #v(-0.5em * parspacing)]};
+    #if(not flags.contains("noheadline")) {
+      line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))
+    }
     ],
     footer: [
-      #line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)));
-      #v(-1em)
-      #if (flags.contains("nofoot")) {} else [
+      #stack(dir: ttb, spacing: 1em)[
+        #if(not flags.contains("nofootline")){line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))};
+      ][
+        #if (flags.contains("nofoot")) {} else [
         #if(flags.contains("blankfoot")) {} else [
           #if (cod != "") { code } else {}
         #if (rp-title != "" and not flags.contains("centrefoot")) { emph[#rp-title] } else if (title != "" and not flags.contains("centrefoot")) { emph[#title] }
-      ] #h(1fr) #strong[#counter(page).display()]#if(flags.contains("centrefoot")){h(1fr)}
+      ] #h(1fr) #strong[#context counter(page).display()]#if(flags.contains("centrefoot")){h(1fr)}
+      ]
       ]
     ],
     columns: doc-columns,
   )
   // #region HEADINGS
   // HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS ---
+
+  show heading.where(level: 1): hy => if (flags.contains("centre-h1")) {
+    align(center, hy)
+  } else {
+    hy
+  }
+
   let headingPrefixDisplay = if (headingprefix == "") {
     none
   } else {
@@ -507,7 +556,7 @@
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
           grid.cell(fill: tx, align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: datx)[#hy.body],
+          grid.cell(fill: gradient.linear(datx, tx))[#hy.body],
         )
       ]
     ]
@@ -570,7 +619,7 @@
               width: 100%,
               inset: (
                 y: 0.66em,
-                left: if (flags.contains("no-h1-indent")) {
+                x: if (flags.contains("no-h1-indent")) {
                   0em
                 } else {
                   0.25em
@@ -578,18 +627,18 @@
               ),
               height: auto,
             )[
-              #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon + center, horizon + left),
+              #grid(columns: (auto, 1fr), inset: (x: 0.5em), align: (horizon + center, if(flags.contains("centre-h1-body")){horizon+center}else{horizon+left}),
                 grid.cell(inset: (right: 1em, left: 0.75em), stroke: (right: dottedStroke(th: 2pt, ac)))[
                   #stack(
                     dir: ttb,
                     spacing: 0.125in * linespacing,
                     text(size: 1em, weight: "bold")[#hy.supplement],
-                    text(size: 2em, weight: "bold")[#headingPrefixDisplay#counter(heading).display()],
+                    text(size: 2em, weight: 900)[#headingPrefixDisplay#counter(heading).display()],
                   )
                 ],
                 grid.cell(inset: (left: 1em))[
-                  #set par(justify: false)
-                  #text(size: 1.75em, fill: tx, weight: "extrabold")[#hy.body]
+                    #set par(justify: false)
+                    #text(size: 1.75em, fill: tx, weight: 700)[#hy.body]
                 ]
               )
               // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
@@ -603,11 +652,7 @@
     set text(1.25em)
     [#hy]
   }
-  show heading.where(level: 1): hy => if (flags.contains("centre-h1")) {
-    align(center, hy)
-  } else {
-    hy
-  }
+  
   // -- HEADING 2 -- HEADING 2 -- HEADING 2 -- HEADING 2 --
   show heading.where(level: 2): hy => if (headingstyle in ("block", "book")) {
     [
@@ -623,7 +668,7 @@
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
           grid.cell(fill: acda, align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: ac)[#hy.body],
+          grid.cell(fill: gradient.linear(ac,acda))[#hy.body],
         )
       ]
     ]
@@ -685,7 +730,7 @@
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
           grid.cell(fill: color.mix(laac, la), align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: la)[#hy.body],
+          grid.cell(fill: gradient.linear(la,laac))[#hy.body],
         )
       ]
     ]
@@ -987,7 +1032,7 @@
                   ],
                   grid.cell(inset: (left: 1em))[
                     #set par(justify: false)
-                    #text(size: 1.75em, fill: tx, weight: "extrabold")[#h.body]
+                    #text(size: 1.75em, fill: tx, weight: 700)[#h.body]
                   ]
                 )
                 // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
@@ -1025,22 +1070,38 @@
   show "TH": thornUpper
   show " and ": amper
   // IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES ---
-  set image(fit: "contain", width: 100%)
-  show <img>: h => align(center)[#rect(stroke: dottedStroke(th: 2pt, ac), inset: 0in, outset: 0in, fill: none, width: (imagewidth * 100%))[#h]]
+  set image(fit: "contain", width: if(not flags.contains("no-image-resize")){100%}else{auto})
+  show <img>: h => align(center)[
+    #block(stroke: dottedStroke(th: 2pt, ac), fill: none, h)
+    ]
   // TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES ---
   show figure: set block(spacing: 1em)
   show figure.caption: emph
   set figure(numbering: "1.1.1", gap: 1em)
   set table(
-    fill: (_, y) => if (y == 0) {
-      tx
-    } else if (calc.rem(y, 2) == 0) {
-      bgla.mix(bg)
+    fill: (x, y) => if (table-settings.contains("checker")) {
+      if (y == 0) { tx }
+      else if(calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
+    } else if (table-settings.contains("matrix")) {
+      if (y == 0 or x == 0) {
+        if(calc.rem(x + y, 2) == 1) { datx.mix(tx) } else { tx }
+      }
+      else if(calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
+    } else if (table-settings.contains("cols")) {
+      if (y == 0) { tx }
+      else if (calc.rem(x, 2) == 0) { bgla.mix(bg) }
+      else { bg }
     } else {
-      bg
+      if (y == 0) { tx }
+      else if (calc.rem(y, 2) == 0) { bgla.mix(bg) }
+      else { bg }
     },
-    stroke: none,
-    align: if (flags.contains("table-cen")) {
+    stroke: {
+      if (table-settings.contains("h-stroke")) { (y: 1pt + tx, rest: none) }
+      else if (table-settings.contains("v-stroke")) { (x: 1pt + tx, rest: none) }
+      else if (table-settings.contains("hv-stroke")) { (1pt + tx) }
+    },
+    align: if (table-settings.contains("centre") or flags.contains("table-cen")) {
       horizon + center
     } else {
       horizon + left
@@ -1049,13 +1110,14 @@
   )
   set grid(
     inset: 0.33em,
-    align: if (flags.contains("table-cen")) {
+    align: if (table-settings.contains("centre") or flags.contains("table-cen")) {
       horizon + center
     } else {
       horizon + left
     },
   )
   show table.cell.where(y: 0): k => strong(text(..fill-bg)[#[#k]])
+  show table.cell.where(x: 0): k => if(table-settings.contains("matrix")){strong(text(..fill-bg)[#[#k]])}else{k}
   set grid.hline(stroke: solidStroke(tx))
   set table.hline(stroke: solidStroke(tx))
   set grid.vline(stroke: solidStroke(tx))
@@ -1178,6 +1240,11 @@
   show <ccb-la2>: body => compCallBody(la, da, body)
   show <ccb-bgla>: body => compCallBody(bgla, tx, body)
   show <ccb-bg>: body => compCallBody(bg, tx, body)
+
+  show regex("=\s*(.*?)\s*="): a => {show "=": none; q-ac(a)}
+  show regex("==\s*(.*?)\s*=="): a => {show "==": none; shl(a)}
+  show regex("===\s*(.*?)\s*==="): a => {show "===": none; hl-la(a)}
+
   // TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS ---
   show <t-tx>: t => text(fill: tx)[#t]
   show <t-datx>: t => text(fill: datx)[#t]
@@ -1227,7 +1294,7 @@
   }
   // RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT ---
   let rpcoverpage() = page(
-    margin: 0.5in,
+    margin: if(not flags.contains("shineformat")){0.5in}else{(x:1in, rest: 0.5in)},
     header: none,
     footer: none,
     columns: 1,
@@ -1297,7 +1364,7 @@
     none
   }
   let dividerdisplay = if (flags.contains("nodivider")) { } else {
-    [#v(-1em)
+    [#v(0em)
       #line(length: 100%, stroke: solidStroke(tx))]
   }
   let schooldocTitleDisplay = if (title != "") {
@@ -1320,7 +1387,7 @@
         {
           box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay)) + h(1fr) + daterepr
         },
-        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+        block(inset: (top: linespacing * 0.25em), dividerdisplay),
       )
     ]
   } else {
@@ -1338,7 +1405,7 @@
         {
           codedisplay + "·" + daterepr
         },
-        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+        block(inset: (top: linespacing * 0.25em), dividerdisplay),
       ),
     )
   }
@@ -1357,7 +1424,7 @@
         {
           codedisplay + "·" + daterepr
         },
-        block(inset: (top: linespacing * 1.5em), dividerdisplay),
+        block(inset: (top: linespacing * 0.25em), dividerdisplay),
       ),
     )
   }
@@ -1389,10 +1456,7 @@
         }
       ]
     }
-    #if (flags.contains("nodivider")) { } else {
-      [#v(-1em)
-        #line(length: 100%, stroke: solidStroke(tx))]
-    }
+    #dividerdisplay
   ]
   if (doctype == "article") {
     articleheader()
@@ -1417,10 +1481,7 @@
         }
       ]
     }
-    #if (not flags.contains("nodivider")) { } else {
-      [#v(-1em)
-        #line(length: 100%, stroke: solidStroke(tx))]
-    }
+    #dividerdisplay
   ]
   if (doctype == "writing") {
     writingheader()
@@ -1549,7 +1610,8 @@
         The quadratic equation is $x = (-b +- sqrt(b^2 -4\a\c))/(2a)$. Euler's identity
         is $e^(pi\i) + 1 = 0$, and the idea that $e = m\c^2+p\c$ does your mom and your
         senator. `PINGAS`
-        $ f(a,b,c,d,x) = a\x^3 + b\x^2 + c\x + d $
+        $ f(a,b,c,d) = a\x^3 + b\x^2 + c\x + d $
+        $ {x in #emoji.pizza | x <= 50#emoji.fries} $
         ```cs
         namespace joniksj;
         public class EntryPoint() {
@@ -1576,17 +1638,17 @@
           ),
           caption: [PINGAS],
         )
-        #[Apple]<hl-tx> PINGAS
-        #[Apple]<hl-datx> PINGAS
-        #[Apple]<hl-da> PINGAS
-        #[Apple]<hl-da2> PINGAS
-        #[Apple]<hl-acda> PINGAS
-        #[Apple]<hl-ac> PINGAS
-        #[Apple]<hl-laac> PINGAS
-        #[Apple]<hl-la> PINGAS
-        #[Apple]<hl-la2> PINGAS
-        #[Apple]<hl-bgla> PINGAS
-        #[Apple]<hl-bg> PINGAS
+        #[Apple]<qhl-tx> PINGAS
+        #[Apple]<qhl-datx> PINGAS
+        #[Apple]<qhl-da> PINGAS
+        #[Apple]<qhl-da2> PINGAS
+        #[Apple]<qhl-acda> PINGAS
+        #[Apple]<qhl-ac> PINGAS
+        #[Apple]<qhl-laac> PINGAS
+        #[Apple]<qhl-la> PINGAS
+        #[Apple]<qhl-la2> PINGAS
+        #[Apple]<qhl-bgla> PINGAS
+        #[Apple]<qhl-bg> PINGAS
         #quote(attribution: "Your Mom")[
           #lorem(100)
         ]
