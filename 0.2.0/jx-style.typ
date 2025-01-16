@@ -76,6 +76,11 @@
 #let solidStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "solid")
 #let dottedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dotted")
 #let dashedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dashed")
+
+#let linehl(body) = [
+#[#body]<linehl>
+]
+
 #let hl(back, body) = [
   #box(
     inset: (x: 0pt),
@@ -129,6 +134,7 @@
       // // ALL FIELDS BEGINNING WITH rp- ARE ONLY USED IN PAPERS (i.e. docutypes "paper" and "businessPlan")
       rp-title: "", // PAPER TITLE.
       rp-authors: (), // PAPER AUTHORS. IS AN ARRAY.
+      rp-authors-limit: 6,
       rp-school: "", // PAPER SCHOOL.
       rp-submittedTo: "", // PAPER SUBMITTED TO THIS PERSON.
       rp-keywords: (), // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
@@ -299,6 +305,7 @@
     } else {
       100%
     },
+    costs: ( hyphenation: 200%, runt: 200%, widow: 200%, orphan: 200%, )
   )
   show raw: set text(font: "Iosevka SS14", size: 1.25em)
   show raw.where(block: false): b => box(
@@ -460,7 +467,7 @@
       (..author,).join("; ")
     },
     date: datetime.today(),
-    keywords: (title, subtitle, ..rp-keywords),
+    keywords: (repr(title), repr(subtitle), ..rp-keywords),
   )
   set page(
     fill: bg,
@@ -555,8 +562,8 @@
         #grid(
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
-          grid.cell(fill: tx, align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: gradient.linear(datx, tx))[#hy.body],
+          grid.cell(fill: tx, align: left)[#set text(weight: "black");#headingPrefixDisplay#counter(heading).display()],
+          grid.cell(fill: gradient.linear(datx, tx))[#set text(weight: "black");#hy.body],
         )
       ]
     ]
@@ -582,7 +589,7 @@
     [
       // -- H1 OLD STYLE
       #set text(size: 1.25em, fill: bg, weight: "bold")
-      #block(width: 100%, fill: tx, inset: 0.33em)[ #align(center)[#hy] ]
+      #block(width: 100%, fill: gradient.linear(datx, tx), inset: 0.5em, radius: 0.5em)[ #align(center)[#hy] ]
     ]
   } else if (headingstyle == "lines") {
     [
@@ -694,7 +701,7 @@
     [
       // -- H2 OLD STYLE
       #set text(size: 1.167em, fill: bg, weight: "bold")
-      #block(width: 100%, fill: ac, inset: 0.33em)[ #align(left)[#hy] ]
+      #block(width: 100%, fill: gradient.linear(ac, acda), inset: 0.5em, radius: 0.5em)[ #align(left)[#hy] ]
     ]
   } else if (headingstyle == "lines") {
     [
@@ -756,7 +763,7 @@
     [
       // -- H3 OLD STYLE
       #set text(size: 1.083em, fill: tx, weight: "bold")
-      #block(width: 100%, fill: la, inset: 0.33em)[ #align(left)[#hy] ]
+      #block(width: 100%, fill: gradient.linear(la, laac), inset: 0.5em, radius: 0.5em)[ #align(left)[#hy] ]
     ]
   } else if (headingstyle == "lines") {
     [
@@ -815,7 +822,7 @@
     [
       // -- H4 OLD STYLE
       #set text(size: 1em, fill: bg, weight: "bold")
-      #box(..fill-da, inset: (x: 0.33em), outset: (y: 0.33em))[
+      #box(fill: gradient.linear(datx, tx), inset: (x: 0.33em), outset: (y: 0.33em), radius: 0.33em)[
         #[#hy]
       ]
     ]
@@ -873,7 +880,7 @@
     [
       // -- H5 OLD STYLE
       #set text(size: 1em, fill: bg, weight: "bold")
-      #box(..fill-ac, inset: (x: 0.33em), outset: (y: 0.33em))[
+      #box(fill: gradient.linear(ac, acda), inset: (x: 0.33em), outset: (y: 0.33em), radius: 0.33em)[
         #[#hy]
       ]
     ]
@@ -931,7 +938,7 @@
     [
       // -- H6 OLD STYLE
       #set text(size: 1em, fill: da, weight: "bold")
-      #box(..fill-la, inset: (x: 0.33em), outset: (y: 0.33em))[
+      #box(fill: gradient.linear(la, laac), inset: (x: 0.33em), outset: (y: 0.33em), radius: 0.33em)[
         #[#hy]
       ]
     ]
@@ -958,6 +965,9 @@
   } else {
     hy
   }
+  show heading: h => if(flags.contains("bodysizeheads")) {
+    set text(fz); h
+  } else { h }
   // #endregion
   // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHYcite AND CITATIONS ---
   set ref(supplement: if (flags.contains("refsups")) {
@@ -1078,6 +1088,8 @@
   show figure: set block(spacing: 1em)
   show figure.caption: emph
   set figure(numbering: "1.1.1", gap: 1em)
+  show table: set par(justify: false)
+  show table: tab => if(table-settings.contains("bordered")){rect(inset: 0em, stroke: 1pt + tx, tab)}else{tab}
   set table(
     fill: (x, y) => if (table-settings.contains("checker")) {
       if (y == 0) { tx }
@@ -1088,11 +1100,15 @@
       }
       else if(calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
     } else if (table-settings.contains("cols")) {
-      if (y == 0) { tx }
+      if (y == 0) { if (calc.rem(x, 2) == 0) {tx}else{datx.mix(tx)} }
       else if (calc.rem(x, 2) == 0) { bgla.mix(bg) }
       else { bg }
-    } else {
-      if (y == 0) { tx }
+    } else if (table-settings.contains("coltype")) {
+      if (x == 0) { if (calc.rem(y, 2) == 0) {tx}else{datx.mix(tx)} }
+      else if (calc.rem(y, 2) == 0) { bgla.mix(bg) }
+      else { bg }
+    } else if(not table-settings.contains("blank")){
+      if (y == 0) { if (calc.rem(x, 2) == 0) {tx}else{datx.mix(tx)} }
       else if (calc.rem(y, 2) == 0) { bgla.mix(bg) }
       else { bg }
     },
@@ -1101,23 +1117,28 @@
       else if (table-settings.contains("v-stroke")) { (x: 1pt + tx, rest: none) }
       else if (table-settings.contains("hv-stroke")) { (1pt + tx) }
     },
-    align: if (table-settings.contains("centre") or flags.contains("table-cen")) {
+    align: (x, y) => if (table-settings.contains("centre") or flags.contains("table-cen")) {
       horizon + center
     } else {
-      horizon + left
+      if(table-settings.contains("coltype")) {
+        if (x == 0) {horizon+centre} else {horizon + left}
+      } else {
+        if (y == 0) {horizon+centre} else {horizon + left}
+      }
+      
     },
     inset: 0.5em,
   )
   set grid(
     inset: 0.33em,
-    align: if (table-settings.contains("centre") or flags.contains("table-cen")) {
+    align: if (table-settings.contains("centre") or flags.contains("grid-cen")) {
       horizon + center
     } else {
       horizon + left
     },
   )
-  show table.cell.where(y: 0): k => strong(text(..fill-bg)[#[#k]])
-  show table.cell.where(x: 0): k => if(table-settings.contains("matrix")){strong(text(..fill-bg)[#[#k]])}else{k}
+  show table.cell.where(y: 0): k => if(not table-settings.contains("blank")){strong(text(..fill-bg)[#[#k]])}else{k}
+  show table.cell.where(x: 0): k => if(table-settings.contains("matrix") or table-settings.contains("coltype")){strong(text(..fill-bg)[#[#k]])}else{k}
   set grid.hline(stroke: solidStroke(tx))
   set table.hline(stroke: solidStroke(tx))
   set grid.vline(stroke: solidStroke(tx))
@@ -1241,9 +1262,20 @@
   show <ccb-bgla>: body => compCallBody(bgla, tx, body)
   show <ccb-bg>: body => compCallBody(bg, tx, body)
 
+  show <linehl>: body => block(
+    width: 100%, outset: (x: 0.5em, y: 0.5em), inset: (y: 0em), fill: la, body
+  )
+
   show regex("=\s*(.*?)\s*="): a => {show "=": none; q-ac(a)}
   show regex("==\s*(.*?)\s*=="): a => {show "==": none; shl(a)}
   show regex("===\s*(.*?)\s*==="): a => {show "===": none; hl-la(a)}
+
+  show raw: h => {
+    show regex("=\s*(.*?)\s*="): a => {show "=": "="; a}
+    show regex("==\s*(.*?)\s*=="): a => {show "==": "==";a}
+    show regex("===\s*(.*?)\s*==="): a => {show "===": "==="; a}
+    h
+  }
 
   // TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS --- TEXT FILLS ---
   show <t-tx>: t => text(fill: tx)[#t]
@@ -1322,13 +1354,27 @@
         _Submitted by:_ #linebreak()
         #if (rp-authors != "") {
           [
-            #for aut in rp-authors {
+            #if (rp-authors.len() < rp-authors-limit) {
+              for aut in rp-authors {
               let h = aut.split(", ")
               strong(h.at(0))
               ", "
               h.at(1)
               linebreak()
             }
+            } else {
+              show: columns.with(calc.floor(rp-authors.len()/rp-authors-limit))
+              let ci = 0;
+              for aut in rp-authors {
+                let h = aut.split(", ");
+                strong(h.at(0));
+                ", ";
+                h.at(1);
+                ci += 1;
+                if(calc.rem(ci,(rp-authors-limit+1)) != 0){linebreak();}else{colbreak()}
+              }
+            }
+            
           ]
         }
         #linebreak()
@@ -1364,7 +1410,7 @@
     none
   }
   let dividerdisplay = if (flags.contains("nodivider")) { } else {
-    [#v(0em)
+    box[
       #line(length: 100%, stroke: solidStroke(tx))]
   }
   let schooldocTitleDisplay = if (title != "") {

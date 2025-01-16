@@ -104,7 +104,7 @@
 	"nord-light": (
 		"bg": rgb("#ECEFF4"),	"tx": rgb("#2E3440"),	"ac": rgb("#88C0D0"),	"la": rgb("#D8DEE9"),	"da": rgb("#4C566A") ),
 	"default": (
-		"bg": rgb("#f0f4ff"),	"tx": rgb("#070733"),	"ac": rgb("#5567cf"),	"la": rgb("#bccbf2"),	"da": rgb("#1a1681") ),
+		"bg": rgb("#E9F2F9"),	"tx": rgb("#140D2E"),	"ac": rgb("#5D78D3"),	"la": rgb("#ADC5E9"),	"da": rgb("#242077") ),
 	"altdark": (
 		"bg": rgb("#272736"),	"tx": rgb("#f8ece1"),	"ac": rgb("#a9a8ee"),	"la": rgb("#484764"),	"da": rgb("#C8BCA1") ),
 	"dark": (
