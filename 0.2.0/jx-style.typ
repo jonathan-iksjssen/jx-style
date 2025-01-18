@@ -63,7 +63,10 @@
 #show " »": sym.space.nobreak + "»";
 #show "‹ ": "‹" + sym.space.nobreak;
 #show " ›": sym.space.nobreak + "›";
-#let signature(n) = {set text(font: "JX-Symbols", size: 5em * n); box[J]}
+#let signature(n) = {
+  set text(font: "JX-Symbols", size: 5em * n)
+  box[J]
+}
 #let big(n: 2, body) = [ #text(size: 1em * calc.pow(1.2, n))[#body] ]
 #let sml(n: 2, body) = [ #text(size: 1em / calc.pow(1.2, n))[#body] ]
 #let al-left(body) = [ #align(left)[#body] ]
@@ -78,7 +81,7 @@
 #let dashedStroke(th: 1pt, c) = (paint: c, thickness: th, dash: "dashed")
 
 #let linehl(body) = [
-#[#body]<linehl>
+  #[#body]<linehl>
 ]
 
 #let hl(back, body) = [
@@ -131,25 +134,25 @@
 #let docu(
   docutype: "blankhead", // DETERMINES WHAT KIND OF DOCUMENT IT WILL BE. CHECK THE VARIABLE validDocTypes A BIT BELOW.
   author: "", // AUTHOR. CAN EITHER BE A STRING OR AN ARRAY. NOT USED FOR PAPERS.
-      // // ALL FIELDS BEGINNING WITH rp- ARE ONLY USED IN PAPERS (i.e. docutypes "paper" and "businessPlan")
-      rp-title: "", // PAPER TITLE.
-      rp-authors: (), // PAPER AUTHORS. IS AN ARRAY.
-      rp-authors-limit: 6,
-      rp-school: "", // PAPER SCHOOL.
-      rp-submittedTo: "", // PAPER SUBMITTED TO THIS PERSON.
-      rp-keywords: (), // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
-      rp-subtitle: [], // EXTRA PAPER SUBTITLES SHOULD THE FORMAT DEMAND IT.
-      rp-supplement: [],
-      rp-supplement2: [],
-      rp-header: [], // PAPER HEADER.
-      rp-subject: [], // PAPER SUBJECT.
-      // // FIELDS EXCLUSIVE TO "schooldoc" OR "notes" DOCUTYPES
-      section: "", // SECTION. HIDDEN BY DEFAULT UNLESS FLAG "showsection" is set
-      subject: "", // SUBJECT THE DOCUMENT IS FOR. ONLY SHOWS UP IN DOCUTYPES "notes" AND "schooldoc".
-      cod: "", // JXC-10 ASSIGNMENT OR DOCUMENT CODE.
-      // // FIELDS EXCLUSIVE TO "writing" and "writingVerbose" DOCUTYPES
-      rating: "", // RATING OF DOCUMENT OR ARTICLE.
-      tags: (), // TAGS OF ARTICLE.
+  // // ALL FIELDS BEGINNING WITH rp- ARE ONLY USED IN PAPERS (i.e. docutypes "paper" and "businessPlan")
+  rp-title: "", // PAPER TITLE.
+  rp-authors: (), // PAPER AUTHORS. IS AN ARRAY.
+  rp-authors-limit: 6,
+  rp-school: "", // PAPER SCHOOL.
+  rp-submittedTo: "", // PAPER SUBMITTED TO THIS PERSON.
+  rp-keywords: (), // PAPER KEYWORDS. FOR FUTURE USE. STILL GONNA USE THIS STYLEFILE IN COLLEGE.
+  rp-subtitle: [], // EXTRA PAPER SUBTITLES SHOULD THE FORMAT DEMAND IT.
+  rp-supplement: [],
+  rp-supplement2: [],
+  rp-header: [], // PAPER HEADER.
+  rp-subject: [], // PAPER SUBJECT.
+  // // FIELDS EXCLUSIVE TO "schooldoc" OR "notes" DOCUTYPES
+  section: "", // SECTION. HIDDEN BY DEFAULT UNLESS FLAG "showsection" is set
+  subject: "", // SUBJECT THE DOCUMENT IS FOR. ONLY SHOWS UP IN DOCUTYPES "notes" AND "schooldoc".
+  cod: "", // JXC-10 ASSIGNMENT OR DOCUMENT CODE.
+  // // FIELDS EXCLUSIVE TO "writing" and "writingVerbose" DOCUTYPES
+  rating: "", // RATING OF DOCUMENT OR ARTICLE.
+  tags: (), // TAGS OF ARTICLE.
   title: "", // TITLE OF DOCUMENT.
   subtitle: "", // SUBTITLE OF DOCUMENT.
   description: "", // DOCUMENT DESCRIPTION.
@@ -157,10 +160,12 @@
   colsc: "default", // COLOUR SCHEME OF THE DOCUMENT. SEE irgot.typ
   bgtint: none, // TINT ON BACKGROUND COLOUR. SEE DECLARATION OF VARIABLE bg IN SECTION « COLOUR DEFS »
   size: "print", // PAGE SIZE PRESET. SEE SECTION « PAGE ».
-  date: datetime.today().display("[day padding:none] [month repr:short]. [year repr:full]"), // DATE TO DISPLAY IN THE DOCUMENNT. DEFAULTS TO THE CURRENT DAY.
+  date: datetime
+    .today()
+    .display("[day padding:none] [month repr:short]. [year repr:full]"), // DATE TO DISPLAY IN THE DOCUMENNT. DEFAULTS TO THE CURRENT DAY.
   doc-columns: 1, // NUMBER OF COLUMNS FOR THE DOCUMENT CONTENT.
   outcols: 1, // NUMBER OF COLUMNS FOR THE TABLE OF CONTENTS.
-  imagewidth: 2/3, // WIDTH OF IMAGES.
+  imagewidth: 2 / 3, // WIDTH OF IMAGES.
   // //  HEADINGS
   headingstyle: "block", // HEADING STYLE. ONE OF ("book", "block", "lines", "simple", "old").
   headingnum: "1.1.1", // HEADING NUMBERING STYLE. SEE TYPST'S NUMBERING FUNCTION.
@@ -263,36 +268,39 @@
     },
     features: if (font.contains("Inter")) {
       ("case", "tnum", "zero", "cv01", "cv02", "cv05", "cv08", "cv12", "cv13", "cpsp")
-    } else if (font.contains("Andika")) {(
-      "ss01": 1,
-      "cv04": 1,
-      "cv10": 1,
-      "cv31": 1,
-      "cv35": 1,
-      "cv39": 1,
-      "cv43": 2,
-      "cv51": 1,
-      "cv52": 1,
-      "cv67": 1,
+    } else if (font.contains("Andika")) {
+      (
+        "ss01": 1,
+        "cv04": 1,
+        "cv10": 1,
+        "cv31": 1,
+        "cv35": 1,
+        "cv39": 1,
+        "cv43": 2,
+        "cv51": 1,
+        "cv52": 1,
+        "cv67": 1,
       )
-    } else if (font == "Iosevka") {(
-      "ss14": 1,
-      "cv03": 3,
-      "cv04": 5,
-      "cv06": 1,
-      "cv09": 1, 
-      "cv10": 4,
-      "cv14": 4,
-      "cv19": 2,
-      "cv20": 2,
-      "cv21": 11,
-      "cv23": 4,
-      "cv26": 4,
-      "cv27": 9,
-      "cv41": 18,
-      "cv44": 8,
-      "cv45": 2,
-    )} else {
+    } else if (font == "Iosevka") {
+      (
+        "ss14": 1,
+        "cv03": 3,
+        "cv04": 5,
+        "cv06": 1,
+        "cv09": 1,
+        "cv10": 4,
+        "cv14": 4,
+        "cv19": 2,
+        "cv20": 2,
+        "cv21": 11,
+        "cv23": 4,
+        "cv26": 4,
+        "cv27": 9,
+        "cv41": 18,
+        "cv44": 8,
+        "cv45": 2,
+      )
+    } else {
       ()
     },
     tracking: if (font.contains("Iosevka Aile") or font.contains("Iosevka Etoile")) {
@@ -305,7 +313,7 @@
     } else {
       100%
     },
-    costs: ( hyphenation: 200%, runt: 200%, widow: 200%, orphan: 200%, )
+    costs: (hyphenation: 200%, runt: 200%, widow: 200%, orphan: 200%),
   )
   show raw: set text(font: "Iosevka SS14", size: 1.25em)
   show raw.where(block: false): b => box(
@@ -357,15 +365,15 @@
       hi,
     ),
   )
-  set par(justify: true, leading: linespacing * 0.9em, spacing: 1em * 2 *  parspacing)
-  
+  set par(justify: true, leading: linespacing * 0.9em, spacing: 1em * 2 * parspacing)
+
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
-  } else {  
+  } else {
     text(font: "TeX Gyre Schola Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1em)
-  show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #set block(breakable:true); #align(center)[#me]]
+  show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #set block(breakable: true); #align(center)[#me]]
   show link: set text(..fill-ac)
   // OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES --- OUTLINES ---
   let headingPrefixDisplay = if (headingprefix == "") {
@@ -408,7 +416,7 @@
   } else {
     show heading: he => text(1em / 1.167)[#al-centre[#[#he.body]<cct-datx>]]
     if (flags.contains("separate-outline")) {
-      align(horizon + center, columns(outcols)[#a])
+      align(top + center, columns(outcols)[#a])
       pagebreak(weak: true)
     } else {
       a
@@ -472,57 +480,45 @@
   set page(
     fill: bg,
     //DEFAULT PAGE SIZE: 8.5in x 11in, 0.5in margin on all sides
-    width: if (size == "longbond") { 8.5in
-    } else if (size == "longbond-l") { 13in
-    } else if (size == "print-l") { 11in
-    } else if (size == "phone") { 7in
-    } else if (size == "notebook") { 5.5in
-    } else if (size == "tablet") { 10in
-    } else if (size == "pc") { 12in
-    } else if (size == "a4") { 210mm
-    } else if (size == "longlong") { 14in
-    } else if (size == "book-a") { 5.75in
-    } else if (size == "book-b") { 7.5in
-    } else if (size == "square") { 8in
-    } else if (size == "auto") { 7in
-    } else { 8.5in },
-    height: if (size == "longbond") { 13in
-    } else if (size == "longbond-l") { 8.5in
-    } else if (size == "print-l") { 8.5in
-    } else if (size == "phone") { 14in
-    } else if (size == "notebook") { 7.5in
-    } else if (size == "tablet") { 6in
-    } else if (size == "pc") { 7.5in
-    } else if (size == "a4" ) { 297mm
-    } else if (size == "longlong") { 8in
-    } else if (size == "book-a") { 9in
-    } else if (size == "book-b") { 10.25in
-    } else if (size == "square") { 8in
-    } else if (size == "auto") { auto
-    } else { 11in },
+    width: if (size == "longbond") { 8.5in } else if (size == "longbond-l") { 13in } else if (size == "print-l") { 11in } else if (size == "phone") {
+      7in
+    } else if (size == "notebook") { 5.5in } else if (size == "tablet") { 10in } else if (size == "pc") { 12in } else if (size == "a4") {
+      210mm
+    } else if (size == "longlong") { 14in } else if (size == "book-a") { 5.75in } else if (size == "book-b") { 7.5in } else if (size == "square") {
+      8in
+    } else if (size == "auto") { 7in } else { 8.5in },
+    height: if (size == "longbond") { 13in } else if (size == "longbond-l") { 8.5in } else if (size == "print-l") { 8.5in } else if (
+      size == "phone"
+    ) { 14in } else if (size == "notebook") { 7.5in } else if (size == "tablet") { 6in } else if (size == "pc") { 7.5in } else if (size == "a4") {
+      297mm
+    } else if (size == "longlong") { 8in } else if (size == "book-a") { 9in } else if (size == "book-b") { 10.25in } else if (size == "square") {
+      8in
+    } else if (size == "auto") { auto } else { 11in },
     margin: (
       y: 0.75in,
-      rest: if(flags.contains("shineformat")){1in}else{0.5in},
+      rest: if (flags.contains("shineformat")) { 1in } else { 0.5in },
       bottom: if (flags.contains("nofoot")) { 0.75in } else { 1in },
       top: if (rp-header == []) { 0.75in } else { 1in },
     ),
-    
+
     header: [
-    #if(rp-header != []){[ #rp-header #h(1fr) #rp-subject #v(-0.5em * parspacing)]};
-    #if(not flags.contains("noheadline")) {
-      line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))
-    }
+      #if (rp-header != []) { [ #rp-header #h(1fr) #rp-subject #v(-0.5em * parspacing)] };
+      #if (not flags.contains("noheadline")) {
+        line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))
+      }
     ],
     footer: [
       #stack(dir: ttb, spacing: 1em)[
-        #if(not flags.contains("nofootline")){line(length: 100%, stroke: dashedStroke(tx.transparentize(50%)))};
+        #if (not flags.contains("nofootline")) { line(length: 100%, stroke: dashedStroke(tx.transparentize(50%))) };
       ][
-        #if (flags.contains("nofoot")) {} else [
-        #if(flags.contains("blankfoot")) {} else [
-          #if (cod != "") { code } else {}
-        #if (rp-title != "" and not flags.contains("centrefoot")) { emph[#rp-title] } else if (title != "" and not flags.contains("centrefoot")) { emph[#title] }
-      ] #h(1fr) #strong[#context counter(page).display()]#if(flags.contains("centrefoot")){h(1fr)}
-      ]
+        #if (flags.contains("nofoot")) { } else [
+          #if (flags.contains("blankfoot")) { } else [
+            #if (cod != "") { code } else { }
+            #if (rp-title != "" and not flags.contains("centrefoot")) { emph[#rp-title] } else if (title != "" and not flags.contains("centrefoot")) {
+              emph[#title]
+            }
+          ] #h(1fr) #strong[#context counter(page).display()]#if (flags.contains("centrefoot")) { h(1fr) }
+        ]
       ]
     ],
     columns: doc-columns,
@@ -541,12 +537,14 @@
   } else {
     headingprefix + sym.space
   }
-  set heading(numbering: (..nums) => if (doctype == "businessPlan") {
-    let format = ("I.", "A.", "1.", "I.", "A.", "1.").at(nums.pos().len() - 1)
-    numbering(format, nums.pos().last())
-  } else {
-    numbering(headingnum, ..nums)
-  })
+  set heading(
+    numbering: (..nums) => if (doctype == "businessPlan") {
+      let format = ("I.", "A.", "1.", "I.", "A.", "1.").at(nums.pos().len() - 1)
+      numbering(format, nums.pos().last())
+    } else {
+      numbering(headingnum, ..nums)
+    },
+  )
   set heading(supplement: headingsup)
   // -- HEADING 1 -- HEADING 1 -- HEADING 1 -- HEADING 1 --
   show heading.where(level: 1): hy => if (headingstyle == "block") {
@@ -634,7 +632,11 @@
               ),
               height: auto,
             )[
-              #grid(columns: (auto, 1fr), inset: (x: 0.5em), align: (horizon + center, if(flags.contains("centre-h1-body")){horizon+center}else{horizon+left}),
+              #grid(
+                columns: (auto, 1fr), inset: (x: 0.5em), align: (
+                  horizon + center,
+                  if (flags.contains("centre-h1-body")) { horizon + center } else { horizon + left },
+                ),
                 grid.cell(inset: (right: 1em, left: 0.75em), stroke: (right: dottedStroke(th: 2pt, ac)))[
                   #stack(
                     dir: ttb,
@@ -644,8 +646,8 @@
                   )
                 ],
                 grid.cell(inset: (left: 1em))[
-                    #set par(justify: false)
-                    #text(size: 1.75em, fill: tx, weight: 700)[#hy.body]
+                  #set par(justify: false)
+                  #text(size: 1.75em, fill: tx, weight: 700)[#hy.body]
                 ]
               )
               // #text(size: 2em, weight: "bold")[#headingsup #counter(heading).display()]
@@ -659,7 +661,7 @@
     set text(1.25em)
     [#hy]
   }
-  
+
   // -- HEADING 2 -- HEADING 2 -- HEADING 2 -- HEADING 2 --
   show heading.where(level: 2): hy => if (headingstyle in ("block", "book")) {
     [
@@ -675,7 +677,7 @@
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
           grid.cell(fill: acda, align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: gradient.linear(ac,acda))[#hy.body],
+          grid.cell(fill: gradient.linear(ac, acda))[#hy.body],
         )
       ]
     ]
@@ -737,7 +739,7 @@
           columns: (auto, 1fr),
           inset: (x: 0.5em, y: 0.33em),
           grid.cell(fill: color.mix(laac, la), align: left)[#headingPrefixDisplay#counter(heading).display()],
-          grid.cell(fill: gradient.linear(la,laac))[#hy.body],
+          grid.cell(fill: gradient.linear(la, laac))[#hy.body],
         )
       ]
     ]
@@ -965,19 +967,24 @@
   } else {
     hy
   }
-  show heading: h => if(flags.contains("bodysizeheads")) {
-    set text(fz); h
+  show heading: h => if (flags.contains("bodysizeheads")) {
+    set text(fz)
+    h
   } else { h }
   // #endregion
   // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHYcite AND CITATIONS ---
-  set ref(supplement: if (flags.contains("refsups")) {
-    refsup
-  })
-  set cite(style: if ((doctype in ("businessPlan", "paper")) or flags.contains("use-apa")) {
-    "apa"
-  } else {
-    "ieee"
-  })
+  set ref(
+    supplement: if (flags.contains("refsups")) {
+      refsup
+    },
+  )
+  set cite(
+    style: if ((doctype in ("businessPlan", "paper")) or flags.contains("use-apa")) {
+      "apa"
+    } else {
+      "ieee"
+    },
+  )
   show cite: set text(..fill-ac)
   show cite: a => {
     if (flags.contains("use-apa") or not flags.contains("super-refs")) {
@@ -1032,7 +1039,8 @@
                 ),
                 height: auto,
               )[
-                #grid(columns: (auto, auto), inset: (x: 0.5em), align: (horizon + center, horizon + left),
+                #grid(
+                  columns: (auto, auto), inset: (x: 0.5em), align: (horizon + center, horizon + left),
                   grid.cell(inset: (right: 1em), stroke: (right: dottedStroke(th: 2pt, ac)))[
                     #stack(
                       dir: ttb,
@@ -1080,52 +1088,43 @@
   show "TH": thornUpper
   show " and ": amper
   // IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES ---
-  set image(fit: "contain", width: if(not flags.contains("no-image-resize")){100%}else{auto})
+  set image(fit: "contain", width: if (not flags.contains("no-image-resize")) { 100% } else { auto })
   show <img>: h => align(center)[
     #block(stroke: dottedStroke(th: 2pt, ac), fill: none, h)
-    ]
+  ]
   // TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES --- TABLES AND FIGURES ---
   show figure: set block(spacing: 1em)
   show figure.caption: emph
   set figure(numbering: "1.1.1", gap: 1em)
   show table: set par(justify: false)
-  show table: tab => if(table-settings.contains("bordered")){rect(inset: 0em, stroke: 1pt + tx, tab)}else{tab}
+  show table: tab => if (table-settings.contains("bordered")) { rect(inset: 0em, stroke: 1pt + tx, tab) } else { tab }
   set table(
     fill: (x, y) => if (table-settings.contains("checker")) {
-      if (y == 0) { tx }
-      else if(calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
+      if (y == 0) { tx } else if (calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
     } else if (table-settings.contains("matrix")) {
       if (y == 0 or x == 0) {
-        if(calc.rem(x + y, 2) == 1) { datx.mix(tx) } else { tx }
-      }
-      else if(calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
+        if (calc.rem(x + y, 2) == 1) { datx.mix(tx) } else { tx }
+      } else if (calc.rem(x + y, 2) == 0) { bgla.mix(bg) } else { bg }
     } else if (table-settings.contains("cols")) {
-      if (y == 0) { if (calc.rem(x, 2) == 0) {tx}else{datx.mix(tx)} }
-      else if (calc.rem(x, 2) == 0) { bgla.mix(bg) }
-      else { bg }
+      if (y == 0) { if (calc.rem(x, 2) == 0) { tx } else { datx.mix(tx) } } else if (calc.rem(x, 2) == 0) { bgla.mix(bg) } else { bg }
     } else if (table-settings.contains("coltype")) {
-      if (x == 0) { if (calc.rem(y, 2) == 0) {tx}else{datx.mix(tx)} }
-      else if (calc.rem(y, 2) == 0) { bgla.mix(bg) }
-      else { bg }
-    } else if(not table-settings.contains("blank")){
-      if (y == 0) { if (calc.rem(x, 2) == 0) {tx}else{datx.mix(tx)} }
-      else if (calc.rem(y, 2) == 0) { bgla.mix(bg) }
-      else { bg }
+      if (x == 0) { if (calc.rem(y, 2) == 0) { tx } else { datx.mix(tx) } } else if (calc.rem(y, 2) == 0) { bgla.mix(bg) } else { bg }
+    } else if (not table-settings.contains("blank")) {
+      if (y == 0) { if (calc.rem(x, 2) == 0) { tx } else { datx.mix(tx) } } else if (calc.rem(y, 2) == 0) { bgla.mix(bg) } else { bg }
     },
     stroke: {
-      if (table-settings.contains("h-stroke")) { (y: 1pt + tx, rest: none) }
-      else if (table-settings.contains("v-stroke")) { (x: 1pt + tx, rest: none) }
-      else if (table-settings.contains("hv-stroke")) { (1pt + tx) }
+      if (table-settings.contains("h-stroke")) { (y: 1pt + tx, rest: none) } else if (table-settings.contains("v-stroke")) {
+        (x: 1pt + tx, rest: none)
+      } else if (table-settings.contains("hv-stroke")) { (1pt + tx) }
     },
     align: (x, y) => if (table-settings.contains("centre") or flags.contains("table-cen")) {
       horizon + center
     } else {
-      if(table-settings.contains("coltype")) {
-        if (x == 0) {horizon+centre} else {horizon + left}
+      if (table-settings.contains("coltype")) {
+        if (x == 0) { horizon + centre } else { horizon + left }
       } else {
-        if (y == 0) {horizon+centre} else {horizon + left}
+        if (y == 0) { horizon + centre } else { horizon + left }
       }
-      
     },
     inset: 0.5em,
   )
@@ -1137,8 +1136,14 @@
       horizon + left
     },
   )
-  show table.cell.where(y: 0): k => if(not table-settings.contains("blank")){strong(text(..fill-bg)[#[#k]])}else{k}
-  show table.cell.where(x: 0): k => if(table-settings.contains("matrix") or table-settings.contains("coltype")){strong(text(..fill-bg)[#[#k]])}else{k}
+  show table.cell.where(y: 0): k => if (
+    (not table-settings.contains("blank")) and (not table-settings.contains("coltype"))
+  ) {
+    strong(text(..fill-bg)[#[#k]])
+  } else { k }
+  show table.cell.where(x: 0): k => if (table-settings.contains("matrix") or table-settings.contains("coltype")) {
+    strong(text(..fill-bg)[#[#k]])
+  } else { k }
   set grid.hline(stroke: solidStroke(tx))
   set table.hline(stroke: solidStroke(tx))
   set grid.vline(stroke: solidStroke(tx))
@@ -1232,7 +1237,7 @@
     ]
   ]
   let compCallBody(back, fore, wid: 100%, body) = [
-    #block(inset: (2pt), fill: none, stroke: (solidStroke(back)))[
+    #block(inset: 2pt, fill: none, stroke: (solidStroke(back)))[
       #block(width: wid, inset: 0.67em, fill: back)[
         #set text(fill: fore)
         #body
@@ -1263,17 +1268,39 @@
   show <ccb-bg>: body => compCallBody(bg, tx, body)
 
   show <linehl>: body => block(
-    width: 100%, outset: (x: 0.5em, y: 0.5em), inset: (y: 0em), fill: la, body
+    width: 100%,
+    outset: (x: 0.5em, y: 0.5em),
+    inset: (y: 0em),
+    fill: la,
+    body,
   )
 
-  show regex("=\s*(.*?)\s*="): a => {show "=": none; q-ac(a)}
-  show regex("==\s*(.*?)\s*=="): a => {show "==": none; shl(a)}
-  show regex("===\s*(.*?)\s*==="): a => {show "===": none; hl-la(a)}
+  show regex("=\s*(.*?)\s*="): a => {
+    show "=": none
+    q-ac(a)
+  }
+  show regex("==\s*(.*?)\s*=="): a => {
+    show "==": none
+    shl(a)
+  }
+  show regex("===\s*(.*?)\s*==="): a => {
+    show "===": none
+    hl-la(a)
+  }
 
   show raw: h => {
-    show regex("=\s*(.*?)\s*="): a => {show "=": "="; a}
-    show regex("==\s*(.*?)\s*=="): a => {show "==": "==";a}
-    show regex("===\s*(.*?)\s*==="): a => {show "===": "==="; a}
+    show regex("=\s*(.*?)\s*="): a => {
+      show "=": "="
+      a
+    }
+    show regex("==\s*(.*?)\s*=="): a => {
+      show "==": "=="
+      a
+    }
+    show regex("===\s*(.*?)\s*==="): a => {
+      show "===": "==="
+      a
+    }
     h
   }
 
@@ -1326,7 +1353,7 @@
   }
   // RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT --- RESEARCH PAPER `rp` FORMAT ---
   let rpcoverpage() = page(
-    margin: if(not flags.contains("shineformat")){0.5in}else{(x:1in, rest: 0.5in)},
+    margin: if (not flags.contains("shineformat")) { 0.5in } else { (x: 1in, rest: 0.5in) },
     header: none,
     footer: none,
     columns: 1,
@@ -1356,25 +1383,25 @@
           [
             #if (rp-authors.len() < rp-authors-limit) {
               for aut in rp-authors {
-              let h = aut.split(", ")
-              strong(h.at(0))
-              ", "
-              h.at(1)
-              linebreak()
-            }
+                let h = aut.split(", ")
+                strong(h.at(0))
+                ", "
+                h.at(1)
+                linebreak()
+              }
             } else {
-              show: columns.with(calc.floor(rp-authors.len()/rp-authors-limit))
-              let ci = 0;
+              show: columns.with(calc.floor(rp-authors.len() / rp-authors-limit))
+              let ci = 0
               for aut in rp-authors {
-                let h = aut.split(", ");
-                strong(h.at(0));
-                ", ";
-                h.at(1);
-                ci += 1;
-                if(calc.rem(ci,(rp-authors-limit+1)) != 0){linebreak();}else{colbreak()}
+                let h = aut.split(", ")
+                strong(h.at(0))
+                ", "
+                h.at(1)
+                ci += 1
+                if (calc.rem(ci, (rp-authors-limit + 1)) != 0) { linebreak() } else { colbreak() }
               }
             }
-            
+
           ]
         }
         #linebreak()
