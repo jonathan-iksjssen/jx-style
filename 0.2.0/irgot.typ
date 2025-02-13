@@ -30,25 +30,31 @@
 	"teal": (
 		"bg": rgb("#F0FDFA"),	"tx": rgb("#042F2E"),	"ac": rgb("#0D9488"),	"la": rgb("#99F6E4"),	"da": rgb("#115E59") ),
 	"cyan": (
+		"bg": rgb("#F0FDFA"),	"tx": rgb("#063139"),	"ac": rgb("#0B939D"),	"la": rgb("#9FF5F0"),	"da": rgb("#135E67") ),
+	"aquamarine": (
 		"bg": rgb("#F0FDFA"),	"tx": rgb("#083344"),	"ac": rgb("#0891B2"),	"la": rgb("#A5F3FC"),	"da": rgb("#155E75") ),
+	"cerulean": (
+		"bg": rgb("#F0FBFD"),	"tx": rgb("#083147"),	"ac": rgb("#058BBD"),	"la": rgb("#B0EDFD"),	"da": rgb("#0E5C7D") ),
 	"sky": (
 		"bg": rgb("#F0F9FF"),	"tx": rgb("#082F49"),	"ac": rgb("#0284C7"),	"la": rgb("#BAE6FD"),	"da": rgb("#075985") ),
 	"azure": (
-		"bg": rgb("#F0F8FF"),	"tx": rgb("#102A4F"),	"ac": rgb("#1474D9"),	"la": rgb("#BDE1FE"),	"da": rgb("#134D9A") ),
+		"bg": rgb("#F0F8FF"),	"tx": rgb("#102A4F"),	"ac": rgb("#1371d2"),	"la": rgb("#BDE1FE"),	"da": rgb("#124b95") ),
 	"blue": (
-		"bg": rgb("#EFF6FF"),	"tx": rgb("#172554"),	"ac": rgb("#2563EB"),	"la": rgb("#BFDBFE"),	"da": rgb("#1E40AF") ),
+		"bg": rgb("#EFF6FF"),	"tx": rgb("#172554"),	"ac": rgb("#225bd8"),	"la": rgb("#BFDBFE"),	"da": rgb("#1c3ba1") ),
 	"midblue": (
-		"bg": rgb("#EFF4FF"),	"tx": rgb("#1B2050"),	"ac": rgb("#3A55E8"),	"la": rgb("#C3D7FE"),	"da": rgb("#2B38A9") ),
+		"bg": rgb("#EFF4FF"),	"tx": rgb("#1B2050"),	"ac": rgb("#344dd2"),	"la": rgb("#C3D7FE"),	"da": rgb("#273299") ),
 	"indigo": (
-		"bg": rgb("#EEF2FF"),	"tx": rgb("#1E1B4B"),	"ac": rgb("#4F46E5"),	"la": rgb("#C7D2FE"),	"da": rgb("#3730A3") ),
+		"bg": rgb("#EEF2FF"),	"tx": rgb("#1E1B4B"),	"ac": rgb("#483fd0"),	"la": rgb("#C7D2FE"),	"da": rgb("#312c93") ),
 	"violet": (
-		"bg": rgb("#F5F3FF"),	"tx": rgb("#2E1065"),	"ac": rgb("#7C3AED"),	"la": rgb("#DDD6FE"),	"da": rgb("#5B21B6") ),
+		"bg": rgb("#F5F3FF"),	"tx": rgb("#2E1065"),	"ac": rgb("#6F3AE0"),	"la": rgb("#DDD6FE"),	"da": rgb("#4F27A0") ),
 	"purple": (
 		"bg": rgb("#FAF5FF"),	"tx": rgb("#3B0764"),	"ac": rgb("#9333EA"),	"la": rgb("#E9D5FF"),	"da": rgb("#6B21A8") ),
 	"magenta": (
 		"bg": rgb("#FDF4FF"),	"tx": rgb("#4A044E"),	"ac": rgb("#C026D3"),	"la": rgb("#F5D0FE"),	"da": rgb("#86198F") ),
 	"fuschia": (
 		"bg": rgb("#FDF3FC"),	"tx": rgb("#4D0639"),	"ac": rgb("#CE27A5"),	"la": rgb("#F8D0F3"),	"da": rgb("#92186E") ),
+	"midpink": (
+		"bg": rgb("#FDF3FA"),	"tx": rgb("#4F072F"),	"ac": rgb("#D5278E"),	"la": rgb("#FAD0EE"),	"da": rgb("#98185E") ),
 	"pink": (
 		"bg": rgb("#FDF2F8"),	"tx": rgb("#500724"),	"ac": rgb("#DB2777"),	"la": rgb("#FBCFE8"),	"da": rgb("#9D174D") ),
 	"rose": (
@@ -62,9 +68,11 @@
 	"lightgrey": (
 		"bg": rgb("#FAFAFA"),	"tx": rgb("#0A0A0A"),	"ac": rgb("#777777"),	"la": rgb("#D4D4D4"),	"da": rgb("#444444") ),
 	"greengrey": (
-		"bg": rgb("#F9FCF8"),	"tx": rgb("#0D1910"),	"ac": rgb("#596A5B"),	"la": rgb("#DBE1D8"),	"da": rgb("#28352A") ),
+		"bg": rgb("#F9FCF8"),	"tx": rgb("#0D1910").saturate(20%),	"ac": rgb("#596A5B").saturate(20%),	"la": rgb("#DBE1D8").saturate(20%),	"da": rgb("#28352A").saturate(20%) ),
 	"bluegrey": (
-		"bg": rgb("#F8FAFC"),	"tx": rgb("#020617"),	"ac": rgb("#475569"),	"la": rgb("#CBD5E1"),	"da": rgb("#1E293B") ),
+		"bg": rgb("#F8FAFC"),	"tx": rgb("#020617").saturate(20%),	"ac": rgb("#475569").saturate(20%),	"la": rgb("#CBD5E1").saturate(20%),	"da": rgb("#1E293B").saturate(20%) ),
+	"navyblue": (
+		"bg": rgb("#EFF4FF"),	"tx": rgb("#1e2140"),	"ac": rgb("#4353a8"),	"la": rgb("#a5b2cb"),	"da": rgb("#31387a") ),
 	"brown": (
 		"bg": rgb("#EFEBE9"),	"tx": rgb("#3E2723"),	"ac": rgb("#795548"),	"la": rgb("#CCB7B0"),	"da": rgb("#4E342E") ),
 	"pine": (
@@ -130,13 +138,3 @@
 	"days-of-week": (
 		"monday": rgb("#93C5FD50"),	"tuesday": rgb("#FCA5A550"),	"wednesday": rgb("#86EFAC50"),	"thursday": rgb("#FDE04750"),	"friday": rgb("#67E8F950"),	"saturday": rgb("#F0ABFC50"),	"sunday": rgb("#D4D4D450") )
 )
-#set text(font: "Iosevka SS14", size: 16pt)
-#set par(leading: 0em)
-#for i in coll.keys() {
-	if(i == "days-of-week") {continue;}
-	box(inset: 1em)[#i]; h(1fr)
-	for k in coll.at(i).keys() {
-		box(rect(width: 0.75in, fill: coll.at(i).at(k)), stroke: 2pt + black)
-	}
-	linebreak();
-}

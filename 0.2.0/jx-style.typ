@@ -173,7 +173,7 @@
   headingsup: "Section", // NAME FOR EACH HEADING.
   refsup: "§", // SUPPLEMENT FOR REFERENCES. ONLY APPLIES WHEN FLAG "refsups" IS SET
   // // TEXT AND FONT
-  font: "Iosevka SS14", // FONT FOR THE DOCUMENT.
+  font: "Iosevka SS04", // FONT FOR THE DOCUMENT.
   font2: "", // SECONDARY FONT FOR HEADINGS. NOT YET IMPLEMENTED
   fw: "regular", // FONT WEIGHT FOR THE DOCUMENT.
   fz: 12pt, // FONT SIZE FOR THE DOCUMENT
@@ -215,24 +215,26 @@
   }
   if (docutype == "notes") {
     title = subject + ": Notes"
-    headingstyle = "book"
-    flags.push("ampersand")
+    
+    
     flags.push("separate-outline")
     flags.push("separate-bib")
     flags.push("hl-outlined-h1")
   }
   // COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS --- COLOUR DEFS ---
+
+  let procColScheme = if(colsc in coll.keys()) {  coll.at(colsc) } else { coll.at("default")}
   let bg = if (bgtint == "pine") {
-    color.mix((coll.at(colsc, default: "default").at("bg"), 33%), (rgb("#EFEBE9"), 67%))
+    color.mix((procColScheme.at("bg"), 33%), (rgb("#EFEBE9"), 67%))
   } else if (bgtint == "grey") {
-    coll.at(colsc, default: "default").at("bg").desaturate(100%)
+    procColScheme.at("bg").desaturate(100%)
   } else {
-    coll.at(colsc, default: "default").at("bg")
+    procColScheme.at("bg")
   } // BG; 50
-  let la = coll.at(colsc, default: "default").at("la") // lightAccent; 200
-  let ac = coll.at(colsc, default: "default").at("ac") // Accent; 600
-  let da = coll.at(colsc, default: "default").at("da") // darkAccent; 800
-  let tx = coll.at(colsc, default: "default").at("tx") // Text; 950
+  let la = procColScheme.at("la") // lightAccent; 200
+  let ac = procColScheme.at("ac") // Accent; 600
+  let da = procColScheme.at("da") // darkAccent; 800
+  let tx = procColScheme.at("tx") // Text; 950
   let bgla = color.mix(bg, la)
   let laac = color.mix(la, ac)
   let acda = color.mix(ac, da)
@@ -317,12 +319,12 @@
   )
   show raw: set text(font: "Iosevka SS14", size: 1.25em)
   show raw.where(block: false): b => box(
-    fill: la.transparentize(80%),
+    fill: bgla.transparentize(20%),
     radius: 0.25em,
     inset: (x: 0.25em),
     outset: (y: 0.3em),
-    stroke: solidStroke(laac.transparentize(50%)),
-  )[#text(size: 1em * rawsize)[#b]]
+    stroke: solidStroke(la),
+  )[#text(size: 1em * rawsize, fill: da)[#b]]
   show raw.where(block: true): it => {
     set text(size: 1em * rawsize)
     show raw.line: it => {
@@ -389,11 +391,11 @@
     } else {
       "Table of Contents"
     },
-    fill: if (flags.contains("narrow-outline-fills")) {
-      repeat[.#sym.space#sym.zwnj]
-    } else {
-      repeat[#sym.space#sym.zwnj.#sym.space#sym.zwnj]
-    },
+    // fill: if (flags.contains("narrow-outline-fills")) {
+    //   repeat[.#sym.space#sym.zwnj]
+    // } else {
+    //   repeat[#sym.space#sym.zwnj.#sym.space#sym.zwnj]
+    // },
   )
   show outline.entry.where(level: 1): ol => if (flags.contains("hl-outlined-h1")) {
     box(outset: par.leading / 2, fill: bgla, strong(ol))
@@ -480,20 +482,42 @@
   set page(
     fill: bg,
     //DEFAULT PAGE SIZE: 8.5in x 11in, 0.5in margin on all sides
-    width: if (size == "longbond") { 8.5in } else if (size == "longbond-l") { 13in } else if (size == "print-l") { 11in } else if (size == "phone") {
-      7in
-    } else if (size == "notebook") { 5.5in } else if (size == "tablet") { 10in } else if (size == "pc") { 12in } else if (size == "a4") {
-      210mm
-    } else if (size == "longlong") { 14in } else if (size == "book-a") { 5.75in } else if (size == "book-b") { 7.5in } else if (size == "square") {
-      8in
-    } else if (size == "auto") { 7in } else { 8.5in },
-    height: if (size == "longbond") { 13in } else if (size == "longbond-l") { 8.5in } else if (size == "print-l") { 8.5in } else if (
-      size == "phone"
-    ) { 14in } else if (size == "notebook") { 7.5in } else if (size == "tablet") { 6in } else if (size == "pc") { 7.5in } else if (size == "a4") {
-      297mm
-    } else if (size == "longlong") { 8in } else if (size == "book-a") { 9in } else if (size == "book-b") { 10.25in } else if (size == "square") {
-      8in
-    } else if (size == "auto") { auto } else { 11in },
+    width: if (size == "longbond") { 8.5in }
+    else if (size == "longbond-l") { 13in }
+    else if (size == "print-l") { 11in }
+    else if (size == "phone") { 7in }
+    else if (size == "notebook") { 5.5in }
+    else if (size == "tablet") { 10in }
+    else if (size == "pc") { 12in }
+    else if (size == "a4") { 210mm }
+    else if (size == "longlong") { 14in }
+    else if (size == "book-a") { 5.75in }
+    else if (size == "book-b") { 7.5in }
+    else if (size == "square") { 8in }
+    else if (size == "whole") {216mm}
+    else if (size == "half-crosswise") {216mm}
+    else if (size == "half-lengthwise") {108mm}
+    else if (size == "quarter") {108mm}
+    else if (size == "auto") { 7in }
+    else { 8.5in },
+    height: if (size == "longbond") { 13in }
+    else if (size == "longbond-l") { 8.5in }
+    else if (size == "print-l") { 8.5in }
+    else if ( size == "phone" ) { 14in }
+    else if (size == "notebook") { 7.5in }
+    else if (size == "tablet") { 6in }
+    else if (size == "pc") { 7.5in }
+    else if (size == "a4") { 297mm }
+    else if (size == "longlong") { 8in }
+    else if (size == "book-a") { 9in } 
+    else if (size == "book-b") { 10.25in }
+    else if (size == "square") { 8in }
+    else if (size == "whole") {330mm}
+    else if (size == "half-crosswise") {165mm}
+    else if (size == "half-lengthwise") {330mm}
+    else if (size == "quarter") {165mm}
+    else if (size == "auto") { auto }
+    else { 11in },
     margin: (
       y: 0.75in,
       rest: if (flags.contains("shineformat")) { 1in } else { 0.5in },
@@ -642,7 +666,7 @@
                     dir: ttb,
                     spacing: 0.125in * linespacing,
                     text(size: 1em, weight: "bold")[#hy.supplement],
-                    text(size: 2em, weight: 900)[#headingPrefixDisplay#counter(heading).display()],
+                    text(size: 2em, weight: 1000)[#headingPrefixDisplay#counter(heading).display()],
                   )
                 ],
                 grid.cell(inset: (left: 1em))[
@@ -972,7 +996,7 @@
     h
   } else { h }
   // #endregion
-  // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHYcite AND CITATIONS ---
+  // BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS --- BIBLIOGRAPHY AND CITATIONS ---
   set ref(
     supplement: if (flags.contains("refsups")) {
       refsup
@@ -1063,29 +1087,29 @@
     }
     a
   }
-  let amper = if (flags.contains("ampersand")) {
-    " & "
-  } else {
-    " and "
-  }
-  let thornUpper = if (flags.contains("thorn")) {
-    "Þ"
-  } else {
-    "TH"
-  }
-  let thornMixed = if (flags.contains("thorn")) {
-    "Þ"
-  } else {
-    "Th"
-  }
-  let thornLower = if (flags.contains("thorn")) {
-    "þ"
-  } else {
-    "th"
-  }
+  let amper = if (flags.contains("ampersand")) {  " & "} else {  " and " }
+  let thornUpper = if (flags.contains("thorn")) {  "Þ"} else {  "TH" }
+  let thornMixed = if (flags.contains("thorn")) {  "Þ"} else {  "Th" }
+  let thornLower = if (flags.contains("thorn")) {  "þ"} else {  "th" }
+
+  let whUpper = if (flags.contains("wynn")) {  "HǷ"} else {  "WH" }
+  let whMixed = if (flags.contains("wynn")) {  "Hƿ"} else {  "Wh" }
+  let whLower = if (flags.contains("wynn")) {  "hƿ"} else {  "wh" }
+  let wLower = if (flags.contains("wynn")) {  "ƿ"} else {  "w" }
+  let wUpper = if (flags.contains("wynn")) {  "Ƿ"} else {  "W" }
+
   show "th": thornLower
   show "Th": thornMixed
   show "TH": thornUpper
+
+  show "w": wLower
+  show "W": wUpper
+  show "wh": whLower
+  show "Wh": whMixed
+  show "WH": whUpper
+  
+
+
   show " and ": amper
   // IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES --- IMAGES ---
   set image(fit: "contain", width: if (not flags.contains("no-image-resize")) { 100% } else { auto })
@@ -1170,16 +1194,18 @@
       )[#text(fill: fore)[#strong[#body]]]
     ]
   ]
-  let squarehl(back, fore, body) = [
+  let squarehl(back, fore, body, radius: 0em) = [
     #box(
-      inset: (x: 0.15em),
-      outset: (y: 0.45em),
+      inset: (x: 2pt - 1pt/3),
+      outset: (y: 5.5pt- 1pt/3),
       stroke: (solidStroke(back)),
+      radius: radius,
       fill: none,
     )[
       #box(
         inset: (x: 0.33em),
-        outset: (y: 0.35em, x: 0.05em),
+        outset: (y: 0.3em),
+        radius: radius,
         fill: back,
       )[#text(fill: fore)[#strong[#body]]]
     ]
@@ -1267,13 +1293,22 @@
   show <ccb-bgla>: body => compCallBody(bgla, tx, body)
   show <ccb-bg>: body => compCallBody(bg, tx, body)
 
-  show <linehl>: body => block(
-    width: 100%,
-    outset: (x: 0.5em, y: 0.5em),
-    inset: (y: 0em),
-    fill: la,
-    body,
-  )
+  show <linehl>: body => [
+    #box(
+      inset: (x: 0pt),
+      outset: (y: 0.5em, x: 0.33em),
+      width: 100%,
+      stroke: (y: solidStroke(la)),
+      fill: none,
+    )[
+      #box(
+        inset: (x: 0.33em),
+        outset: (y: 0.35em, x: 0.33em),
+        fill: la,
+        width: 100%,
+      )[#body]
+    ]
+  ]
 
   show regex("=\s*(.*?)\s*="): a => {
     show "=": none
@@ -1418,7 +1453,7 @@
     rpcoverpage()
   }
   let daterepr = [
-    #customhl(daycolours.at(wdn), tx, sadaveVerbose)
+    #squarehl(daycolours.at(wdn), tx, sadaveVerbose, radius: 1em)
   ]
   let authordisplay = if (type(author) == str) {
     author
@@ -1426,7 +1461,7 @@
     author.join("; ")
   }
   let sectiondisplay = if (flags.contains("showsection")) {
-    emph(" — " + section)
+    emph(if(not flags.contains("patiformat")){" — "}else{none} + section)
   } else {
     none
   }
@@ -1440,7 +1475,7 @@
     box[
       #line(length: 100%, stroke: solidStroke(tx))]
   }
-  let schooldocTitleDisplay = if (title != "") {
+  let schooldocTitleDisplay = if(title != "" and flags.contains("patiformat")) {[#[#title]<qhl-la>]} else if (title != "") {
     [#[#emph[#title]]<hl-ac>]
   } else {
     none
@@ -1449,7 +1484,24 @@
     [#[#subject]<hl-da>]
   }
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
-  let sdheader() = if (not flags.contains("centrehead")) {
+  let sdheader() = if (flags.contains("patiformat")) {
+    [
+      #stack(
+        dir: ttb,
+        spacing: linespacing * 1em,
+        {
+          strong(authordisplay) + h(1fr) + daterepr
+        },
+        {
+          sectiondisplay + h(1fr) + box(stack(dir:ltr,codedisplay, schooldocTitleDisplay))
+        },
+        block(inset: (top: linespacing * 0.25em), dividerdisplay),
+      )
+    ]
+
+  }
+  
+  else if (not flags.contains("centrehead")) {
     [
       #stack(
         dir: ttb,
@@ -1495,7 +1547,7 @@
           big(n: 1, box(stack(dir: ltr, subjectdisplay, hl-ac("Notes"))))
         },
         {
-          codedisplay + "·" + daterepr
+          codedisplay + " ·" + daterepr
         },
         block(inset: (top: linespacing * 0.25em), dividerdisplay),
       ),
@@ -1579,6 +1631,8 @@
     {
       heading(outlined: false, numbering: none)[DEBUG MODE]
       heading(outlined: false, numbering: none, level: 2)[Parameters]
+      [#procColScheme]
+      [#coll.at(colsc, default: "default")]
       align(center)[
         #table(
           columns: (auto, auto, auto),
