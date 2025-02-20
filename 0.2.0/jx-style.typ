@@ -1,7 +1,7 @@
 #import "irgot.typ": coll
 #import "catppuccin.typ": *
 #import "jx-date.typ": *
-#let irgo(cs, val) = coll.at(cs, default: "default").at(val)
+#let irgo(cs, val) = coll.at(cs, default: "default").at(val);
 
 #let shl(body) = strong[#[#body]<t-ac>]
 #let img(body) = [#[#body]<img>]
