@@ -6,7 +6,7 @@
 	"orange": (
 		"bg": rgb("#FFF7ED"),	"tx": rgb("#431407"),	"ac": rgb("#EA580C"),	"la": rgb("#FED7AA"),	"da": rgb("#9A3412") ),
 	"amber": (
-		"bg": rgb("#FFFBEB"),	"tx": rgb("#451A03"),	"ac": rgb("#D97706"),	"la": rgb("#FDE68A"),	"da": rgb("#92400E") ),
+		"bg": rgb("#FFFBEB"),	"tx": rgb("#431A07"),	"ac": rgb("#D97706"),	"la": rgb("#FEE49A"),	"da": rgb("#904110") ),
 	"yellow": (
 		"bg": rgb("#FEFCE8"),	"tx": rgb("#422006"),	"ac": rgb("#CA8A04"),	"la": rgb("#FEF08A"),	"da": rgb("#854D0E") ),
 	"altyellow": (

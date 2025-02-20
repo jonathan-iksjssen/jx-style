@@ -183,6 +183,7 @@
   parspacing: 1, // SPACING BETWEEN EACH PARAGRAPH.
   flags: (), // FLAGS. SEE flags-documentation.md FOR DETAILS.
   table-settings: (), // TABLE SETTINGS.
+  bib: none, // BIBLIOGRAPHY.
   debug: false,
   body,
 ) = {
@@ -372,7 +373,7 @@
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
   } else {
-    text(font: "TeX Gyre Schola Math")[#m]
+    text(font: "New Computer Modern Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1em)
   show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #set block(breakable: true); #align(center)[#me]]
@@ -456,10 +457,9 @@
   )
   set list(
     tight: false,
-    marker: ([#sym.circle.filled.tiny], [#sym.circle.stroked.small], [#sym.triangle.filled.small.r], [#sym.triangle.stroked.small.r]),
+    marker: ([#sym.circle.filled.tiny], [#sym.triangle.r.small.filled], [#sym.arrow.r]),
   )
-  set terms(tight: false)
-  show terms.item: k => block(inset: (y: 0.167em))[- #[#k.term]<hl-la> #sym.arrow.r.double.long #k.description]
+  show terms.item: k => [- #[#k.term]<qhl-term> #sym.arrow.r.double.long #k.description]
   // PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE --- PAGE ---
   set document(
     title: if (title == "") { } else {
@@ -488,12 +488,13 @@
     else if (size == "phone") { 7in }
     else if (size == "notebook") { 5.5in }
     else if (size == "tablet") { 10in }
-    else if (size == "pc") { 12in }
+    else if (size == "pc") { 16in }
     else if (size == "a4") { 210mm }
     else if (size == "longlong") { 14in }
     else if (size == "book-a") { 5.75in }
     else if (size == "book-b") { 7.5in }
     else if (size == "square") { 8in }
+    else if (size == "square-l") { 12in }
     else if (size == "whole") {216mm}
     else if (size == "half-crosswise") {216mm}
     else if (size == "half-lengthwise") {108mm}
@@ -506,12 +507,13 @@
     else if ( size == "phone" ) { 14in }
     else if (size == "notebook") { 7.5in }
     else if (size == "tablet") { 6in }
-    else if (size == "pc") { 7.5in }
+    else if (size == "pc") { 9in }
     else if (size == "a4") { 297mm }
     else if (size == "longlong") { 8in }
     else if (size == "book-a") { 9in } 
     else if (size == "book-b") { 10.25in }
     else if (size == "square") { 8in }
+    else if (size == "square-l") { 12in }
     else if (size == "whole") {330mm}
     else if (size == "half-crosswise") {165mm}
     else if (size == "half-lengthwise") {330mm}
@@ -549,6 +551,9 @@
   )
   // #region HEADINGS
   // HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS --- HEADINGS ---
+  // TODO: unify heading designs
+
+  show heading: set par(leading: 0.5em)
 
   show heading.where(level: 1): hy => if (flags.contains("centre-h1")) {
     align(center, hy)
@@ -1188,7 +1193,7 @@
       fill: none,
     )[
       #box(
-        inset: (x: 0.33em),
+        inset: (x: 0.3em),
         outset: (y: 0.3em),
         fill: back,
       )[#text(fill: fore)[#strong[#body]]]
@@ -1203,7 +1208,7 @@
       fill: none,
     )[
       #box(
-        inset: (x: 0.33em),
+        inset: (x: 0.3em),
         outset: (y: 0.3em),
         radius: radius,
         fill: back,
@@ -1232,6 +1237,7 @@
   show <qhl-la2>: body => squarehl(la, da, body)
   show <qhl-bgla>: body => squarehl(bgla, tx, body)
   show <qhl-bg>: body => squarehl(bg, tx, body)
+  show <qhl-term>: body => squarehl(gradient.linear(la, color.mix(la,laac), angle: 45deg), tx, body)
   // CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS --- CALLOUTS ---
   let call(back, fore, body) = [
     #align(center)[
@@ -1475,8 +1481,10 @@
     box[
       #line(length: 100%, stroke: solidStroke(tx))]
   }
-  let schooldocTitleDisplay = if(title != "" and flags.contains("patiformat")) {[#[#title]<qhl-la>]} else if (title != "") {
-    [#[#emph[#title]]<hl-ac>]
+  let schooldocTitleDisplay(title: title) = if(title != "" and flags.contains("patiformat")) {
+    [#h(0.25em)#[#title]<qhl-la>]
+    } else if (title != "") {
+    [#[#[#title]]<hl-ac>]
   } else {
     none
   }
@@ -1484,16 +1492,17 @@
     [#[#subject]<hl-da>]
   }
   // SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT --- SCHOOLDOC OR NOTES FORMAT ---
-  let sdheader() = if (flags.contains("patiformat")) {
+  let sdheader(tit: title) = if (flags.contains("patiformat")) {
     [
       #stack(
         dir: ttb,
         spacing: linespacing * 1em,
         {
+          set strong(delta: 600)
           strong(authordisplay) + h(1fr) + daterepr
         },
         {
-          sectiondisplay + h(1fr) + box(stack(dir:ltr,codedisplay, schooldocTitleDisplay))
+          sectiondisplay + h(1fr) + box(stack(dir:ltr,codedisplay, schooldocTitleDisplay(title: tit)))
         },
         block(inset: (top: linespacing * 0.25em), dividerdisplay),
       )
@@ -1507,10 +1516,11 @@
         dir: ttb,
         spacing: linespacing * 1em,
         {
+          set strong(delta: 600)
           strong(authordisplay) + sectiondisplay + h(1fr) + codedisplay
         },
         {
-          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay)) + h(1fr) + daterepr
+          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay(title: tit))) + h(1fr) + daterepr
         },
         block(inset: (top: linespacing * 0.25em), dividerdisplay),
       )
@@ -1522,10 +1532,11 @@
         dir: ttb,
         spacing: linespacing * 1em,
         {
+          set strong(delta: 600)
           strong(authordisplay) + sectiondisplay
         },
         {
-          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay))
+          box(stack(dir: ltr, subjectdisplay, schooldocTitleDisplay(title: tit)))
         },
         {
           codedisplay + "·" + daterepr
@@ -1534,30 +1545,12 @@
       ),
     )
   }
-  let notesheader() = {
-    align(
-      center,
-      stack(
-        dir: ttb,
-        spacing: linespacing * 1em,
-        {
-          strong(authordisplay) + sectiondisplay
-        },
-        {
-          big(n: 1, box(stack(dir: ltr, subjectdisplay, hl-ac("Notes"))))
-        },
-        {
-          codedisplay + " ·" + daterepr
-        },
-        block(inset: (top: linespacing * 0.25em), dividerdisplay),
-      ),
-    )
-  }
+
   if (doctype == "schooldoc") {
     sdheader()
   }
   if (doctype == "notes") {
-    notesheader()
+    sdheader(tit: "Notes")
     outline()
   }
   // ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT --- ARTICLE FORMAT ---
@@ -1792,5 +1785,6 @@
     }
   } else {
     body
+    if(bib != none){bibliography(bib)}
   }
 }
