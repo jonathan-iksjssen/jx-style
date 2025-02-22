@@ -373,7 +373,7 @@
   show math.equation: m => if (font.contains("Fira")) {
     text(font: "Fira Math")[#m]
   } else {
-    text(font: "New Computer Modern Math")[#m]
+    text(font: "TeX Gyre Schola Math")[#m]
   }
   show math.equation.where(block: false): set text(size: 1em)
   show math.equation.where(block: true): me => [#set text(size: 1.5em * mathscale); #set block(breakable: true); #align(center)[#me]]
@@ -554,6 +554,11 @@
   // TODO: unify heading designs
 
   show heading: set par(leading: 0.5em)
+
+  let blockHeading(size, col1, col2, col3, title) = {
+
+  }
+
 
   show heading.where(level: 1): hy => if (flags.contains("centre-h1")) {
     align(center, hy)
@@ -1330,6 +1335,22 @@
   }
 
   show raw: h => {
+    show regex("=\s*(.*?)\s*="): a => {
+      show "=": "="
+      a
+    }
+    show regex("==\s*(.*?)\s*=="): a => {
+      show "==": "=="
+      a
+    }
+    show regex("===\s*(.*?)\s*==="): a => {
+      show "===": "==="
+      a
+    }
+    h
+  }
+
+  show math.equation: h => {
     show regex("=\s*(.*?)\s*="): a => {
       show "=": "="
       a
